@@ -28,14 +28,10 @@ def connect():
 
 	return api
 
- 
+# Sends a tweet given the line as an argument. 
+#       line - the line to tweet.
+#       api_con - instance of the api to use.
 def send_tweet(line, api_con):
-    """
-    Sends a tweet given the line as an argument.
-    line - the line to tweet
-    api_con - instance of the api to use
-    """
-
     if line != "":
         try:
             api_con.update_status(status=line)
@@ -44,9 +40,8 @@ def send_tweet(line, api_con):
             log.error(e)
             return False
 
+# Chooses a line from the dictionary
 def choose_line():
-    """ Chooses a line from the dictionary """
-
     file_name = open(DICTIONARY_PATH, "r")
     file_list = file_name.readlines()
     file_name.close()
@@ -69,9 +64,8 @@ def choose_line():
         else:
             pointer += 1
 
+# Manages the process of sending a tweet
 def iteration():
-    """Manages the process of sending one tweet."""
-
     log.info("Connecting to twitter...")
     api_con = connect()
     line = ""
@@ -89,9 +83,8 @@ def iteration():
         log.info("Caught a tweepy error. Trying again...")
         return False
 
+# Main
 def main():
-	""" Main function."""
-
 	logging.basicConfig(filename="./logs/twitter-bot.log", level=logging.INFO)
 	log.info("Starting up for the first time...")
 	log.info("Reading dictionary located at %s", DICTIONARY_PATH)
