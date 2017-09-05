@@ -1,4 +1,66 @@
-Hello World!
-I'm a robot!
-poop poop poop
-# Don't say this
+# Dictionary for all messages that can be tweeted (lines beginning with a # are ignored) - Do not have any blank lines.
+#
+# -- Michael Scott --
+That's what she said!
+Zippity Zoppity give me the Boppity!
+I love inside jokes, love to be a part of one someday.
+Sometimes I'll start a sentence and I don't even know where it's going.
+I am Beyonce always.
+I DECLARE BANKRUPTCY!
+I'm not superstitious, but I am a little stitious.
+Hi, I'm date Mike... Nice to meet me!
+We are all Homos... Homosapiens.
+Just poopin'. You know how I be.
+I hate... so much about the things you choose to be.
+Just tell him to call me ASAP as possible.
+Abraham Lincoln once said that, 'If you're a racist I will attack you with the North.'
+Suddenly she's not yo ho no mo'.
+Well, happy birthday, Jesus. Sorry your party's so lame.
+Dwight, you ignorant slut!
+The worst thing about prison was... the dementors!
+You don't know me; you've just seen my penis.
+I should have burned this place down when I had the chance.
+Would I rather be feared or loved? Easy, both. I want people to be afraid of how much they love me. 
+#
+# -- Creed Bratton --
+The Taliban's the worst... Great Heroin, though.
+That is Northern Lights Cannabis Indica.
+I've been involved with a number of cults, both as a leader and as a follower. 
+You have more fun as a follower, but you make more money as a leader.
+If I can't scuba, then what's this all been about? What am I working toward?
+Darnell's a chump.
+You deal with this, or you, me, Sammy, Phyllis, the chick you hit with the car...we're goners.
+Nobody steals from Creed Bratton and gets away with it. The last person to do this disappeared. His name? Creed Bratton.
+I sprout mung beans on a damp paper towel in my desk drawer. Very nutritious, but they smell like death.
+You're paying way to much for worms, man. Who's your worm guy?
+You ever notice you can only ooze two things: sexualty and pus.
+I already won the lotto. I was born in the U - S of A baby!
+#
+# -- Andy Bernard --
+Sorry I annoyed you with my friendship.
+Really? Well, maybe you should look in the smart part of your brain.
+I'm always think one step ahead... like a carpenter... who makes stairs.
+Andt Bernard does not lose contests, he wins them or he quits them because they are unfair.
+I mean for the record I prefer women...but off the record I'm kind of confused.
+Women cannot resist a man singing show tunes. It's so powerful, a lot of men can't resist a man singing show tunes.
+You know what? Maybe you're in the ceiling.
+You're the deuce I never want to drop.
+I wish there was a way to know you were in the good old days before you actually left them.
+Every little boy fantasizes about his fairy-tale wedding.
+Do not test my politeness.
+The fire's shooting at us!
+#
+# -- Dwight Schrute --
+Who is Justice Beaver?
+Absolutely I do.
+Reject a woman and she will never let it go, one of the many defects of their kind. Also, weak arms.
+Before I do anything I ask myself 'Would an idiot do that?' And if the answer is yes, I do not do that thing.
+Today, smoking is gonna save lives.
+I am fast. To give you a reference point I am somewhere between a snake and a mongoose... And a panther.
+I sat at my desk all day with a rifle that shoots potatoes at 60 pounds per square inch. Can you imagine if I was deranged?
+Through concentration, I can raise and lower my cholesterol at will.
+My maternal grandfather was the toughest guy I ever knew.
+World War II veteran, killed twenty men, and spent the rest of the war in an Allied prison camp.
+#
+# -- Jim Halpert --
+Lord, beer me strength.

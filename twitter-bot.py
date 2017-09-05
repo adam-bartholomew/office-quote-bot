@@ -30,14 +30,16 @@ def connect():
 
 # Sends a tweet given the line as an argument. 
 #       line - the line to tweet.
-#       api_con - instance of the api to use.
-def send_tweet(line, api_con):
+#       connection - instance of the api to use.
+def send_tweet(line, connection):
+    date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     if line != "":
         try:
-            api_con.update_status(status=line)
+            connection.update_status(status=line)
             return True
         except tweepy.TweepError as e:
             log.error(e)
+            log.info("error occured at %s", date_time)
             return False
 
 # Chooses a line from the dictionary
@@ -64,10 +66,12 @@ def choose_line():
         else:
             pointer += 1
 
+#def check_line(line, connection):
+
 # Manages the process of sending a tweet
 def iteration():
     log.info("Connecting to twitter...")
-    api_con = connect()
+    connection = connect()
     line = ""
     log.info("Connected.")
 
@@ -75,25 +79,27 @@ def iteration():
     line = choose_line()
 
     log.info("Sending tweet...")
-    if (send_tweet(line, api_con) is True):
+    if (send_tweet(line, connection) is True):
         date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         log.info("Tweet sent with the line: %s at time %s", line, date_time)
         return True
     else:
-        log.info("Caught a tweepy error. Trying again...")
+        date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        log.info("Caught a tweepy error. at %s Trying again...", date_time)
         return False
 
 # Main
 def main():
-	logging.basicConfig(filename="./logs/twitter-bot.log", level=logging.INFO)
-	log.info("Starting up for the first time...")
-	log.info("Reading dictionary located at %s", DICTIONARY_PATH)
+    logging.basicConfig(filename="./logs/twitter-bot.log", level=logging.INFO)
+    log.info("Starting up for the first time...")
+    log.info("Reading dictionary located at %s", DICTIONARY_PATH)
 
-	while True:
-		did_tweet = iteration()
-		if (did_tweet is False):
-			did_tweet = iteration()
-		time.sleep(SLEEP_FOR)
+    while True:
+        did_tweet = iteration()
+        if (did_tweet is False):
+            did_tweet = iteration()
+        else:
+            time.sleep(SLEEP_FOR)
 
 if __name__ == "__main__":
 	main()
