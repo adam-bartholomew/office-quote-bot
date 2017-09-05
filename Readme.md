@@ -1,8 +1,6 @@
 ## A Twitter Bot that tweets random quotes from "The Office"
-
-###Created by Adam Bartholomew, using Python and Tweepy.
-
-#####With credit to [Josh Richard](https://github.com/joshuarichard)
+### Created by Adam Bartholomew, using Python and Tweepy.
+##### With credit to [Josh Richard](https://github.com/joshuarichard)
 
 Further Reading and Library Documentation
 -------
