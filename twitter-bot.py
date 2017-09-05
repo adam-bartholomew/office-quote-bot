@@ -7,6 +7,7 @@ import sys
 import datetime
 import logging
 import random
+import json
 
 from config import config
  
@@ -66,7 +67,23 @@ def choose_line():
         else:
             pointer += 1
 
-#def check_line(line, connection):
+#def check_for_duplicates(line, connection):
+
+# Follows someone back if they follow this account
+def check_followers():
+    log.info("Checking followers...")
+    connection = connect()
+    the_bot = connection.me()
+    #log.info(connection.followers())
+    for follower in connection.followers():
+        if follower.following == False:
+            log.info("ALERT: Now following %s!", follower.screen_name)
+            user_name = follower.screen_name
+            user_id = follower.id
+            connection.create_friendship(user_id, user_name)
+        else:
+            log.info("All followers are followed.")
+    log.info("Follower check COMPLETE.")
 
 # Manages the process of sending a tweet
 def iteration():
@@ -75,7 +92,7 @@ def iteration():
     line = ""
     log.info("Connected.")
 
-    log.info("Choosing word to tweet...")
+    log.info("Choosing tweet...")
     line = choose_line()
 
     log.info("Sending tweet...")
@@ -94,7 +111,9 @@ def main():
     log.info("Starting up for the first time...")
     log.info("Reading dictionary located at %s", DICTIONARY_PATH)
 
+    # Sends a tweet every hour and checks for new followers
     while True:
+        check_followers()
         did_tweet = iteration()
         if (did_tweet is False):
             did_tweet = iteration()
