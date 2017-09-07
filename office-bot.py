@@ -21,6 +21,7 @@ API_SECRET = config["api_secret"]
 ACCESS_TOKEN = config["access_token"]
 ACCESS_SECRET = config["access_secret"]
 COMMENT_CHAR = config["comment_char"]
+DOUBLE_LINE_CHAR = config["double_line_char"]
 DICTIONARY_PATH = config["dictionary_path"]
 SLEEP_FOR = int(config["sleep_for"])
 
@@ -50,6 +51,7 @@ def send_tweet(line, connection):
 
 # Chooses a line from the dictionary.
 def choose_line():
+    log.info("Choosing line.")
     fileName = open(DICTIONARY_PATH, "r")
     fileList = fileName.readlines()
     fileName.close()
@@ -66,6 +68,7 @@ def choose_line():
         if pointer == randomInt:
             if line[0] != COMMENT_CHAR:
                 log.info("pointer = %s, randomInt = %s, numberOLines = %s ", pointer, randomInt, numberOfLines)
+                log.info("Line Chosen: %s : %s", randomInt, line)
                 return line
             else:
                 iteration()

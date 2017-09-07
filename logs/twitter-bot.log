@@ -3743,3 +3743,149 @@ INFO:root:Sending tweet...
 INFO:tweepy.binder:PARAMS: {'status': b'Who is Justice Beaver?\n'}
 INFO:root:Tweet sent with the line: Who is Justice Beaver?
  at time 2017-09-07 11:13
+INFO:root:Starting up for the first time...
+INFO:root:Reading dictionary located at ./dict/sayings.txt
+INFO:root:Checking followers...
+INFO:tweepy.binder:PARAMS: {}
+INFO:tweepy.binder:PARAMS: {'screen_name': b'Office_Bot'}
+INFO:tweepy.binder:PARAMS: {}
+INFO:root:All followers are followed.
+INFO:root:Follower check COMPLETE.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:pointer = 36, randomInt = 36, numberOLines = 66 
+INFO:root:Line: 36 : I already won the lotto. I was born in the U-S of A baby!
+ CHOSEN.
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b'I already won the lotto. I was born in the U-S of A baby!\n'}
+INFO:root:Tweet sent with the line: I already won the lotto. I was born in the U-S of A baby!
+ at time 2017-09-07 13:32
+INFO:root:Starting up for the first time...
+INFO:root:Reading dictionary located at ./dict/sayings.txt
+INFO:root:Checking followers...
+INFO:tweepy.binder:PARAMS: {}
+INFO:tweepy.binder:PARAMS: {'screen_name': b'Office_Bot'}
+INFO:tweepy.binder:PARAMS: {}
+INFO:root:All followers are followed.
+INFO:root:Follower check COMPLETE.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 35, randomInt = 35, numberOLines = 66 
+INFO:root:Line Chosen: 35 : You ever notice you can only ooze two things: sexualty and pus.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b'You ever notice you can only ooze two things: sexualty and pus.\n'}
+ERROR:root:[{'message': 'Status is a duplicate.', 'code': 187}]
+INFO:root:error occured at 2017-09-07 13:36
+INFO:root:Caught a tweepy error. at 2017-09-07 13:36 Trying again...
+INFO:root:pointer = 38, randomInt = 38, numberOLines = 66 
+INFO:root:Line Chosen: 38 : Sorry I annoyed you with my friendship.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b'Sorry I annoyed you with my friendship.\n'}
+ERROR:root:[{'message': 'Status is a duplicate.', 'code': 187}]
+INFO:root:error occured at 2017-09-07 13:36
+INFO:root:Caught a tweepy error. at 2017-09-07 13:36 Trying again...
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 25, randomInt = 25, numberOLines = 66 
+INFO:root:Line Chosen: 25 : The Taliban's the worst... Great Heroin, though.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"The Taliban's the worst... Great Heroin, though.\n"}
+INFO:root:Tweet sent with the line: The Taliban's the worst... Great Heroin, though.
+ at time 2017-09-07 13:36
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 18, randomInt = 18, numberOLines = 66 
+INFO:root:Line Chosen: 18 : Dwight, you ignorant slut!
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b'Dwight, you ignorant slut!\n'}
+INFO:root:Tweet sent with the line: Dwight, you ignorant slut!
+ at time 2017-09-07 13:36
+INFO:root:pointer = 1, randomInt = 1, numberOLines = 66 
+INFO:root:Line Chosen: 1 : That's what she said!
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"That's what she said!\n"}
+INFO:root:Tweet sent with the line: That's what she said!
+ at time 2017-09-07 13:36
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 6, randomInt = 6, numberOLines = 66 
+INFO:root:Line Chosen: 6 : Sometimes I'll start a sentence and I don't even know where it's going.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"Sometimes I'll start a sentence and I don't even know where it's going.\n"}
+INFO:root:Tweet sent with the line: Sometimes I'll start a sentence and I don't even know where it's going.
+ at time 2017-09-07 13:36
+INFO:root:pointer = 2, randomInt = 2, numberOLines = 66 
+INFO:root:Line Chosen: 2 : That's what she said!
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"That's what she said!\n"}
+ERROR:root:[{'message': 'Status is a duplicate.', 'code': 187}]
+INFO:root:error occured at 2017-09-07 13:36
+INFO:root:Caught a tweepy error. at 2017-09-07 13:36 Trying again...
+INFO:root:pointer = 0, randomInt = 0, numberOLines = 66 
+INFO:root:Line Chosen: 0 : That's what she said!
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"That's what she said!\n"}
+ERROR:root:[{'message': 'Status is a duplicate.', 'code': 187}]
+INFO:root:error occured at 2017-09-07 13:36
+INFO:root:Caught a tweepy error. at 2017-09-07 13:36 Trying again...
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 31, randomInt = 31, numberOLines = 66 
+INFO:root:Line Chosen: 31 : You deal with this, or you, me, Sammy, Phyllis, the chick you hit with the car...we're goners.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"You deal with this, or you, me, Sammy, Phyllis, the chick you hit with the car...we're goners.\n"}
+INFO:root:Tweet sent with the line: You deal with this, or you, me, Sammy, Phyllis, the chick you hit with the car...we're goners.
+ at time 2017-09-07 13:36
+INFO:root:Checking followers...
+INFO:tweepy.binder:PARAMS: {}
+INFO:tweepy.binder:PARAMS: {'screen_name': b'Office_Bot'}
+INFO:tweepy.binder:PARAMS: {}
+INFO:root:All followers are followed.
+INFO:root:Follower check COMPLETE.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 42, randomInt = 42, numberOLines = 66 
+INFO:root:Line Chosen: 42 : Andt Bernard does not lose contests, he wins them or he quits them because they are unfair.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b'Andt Bernard does not lose contests, he wins them or he quits them because they are unfair.\n'}
+INFO:root:Tweet sent with the line: Andt Bernard does not lose contests, he wins them or he quits them because they are unfair.
+ at time 2017-09-07 13:36

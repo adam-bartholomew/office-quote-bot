@@ -4,5 +4,6 @@ config = {  "api_key" : "TZCMV9KcMARaudSsPx26mkaRC",
 			"access_secret" : "ARAlX9fV0FsPvWg0qIZc1Rg9zJAm2M62lUHfTyDYhGBpM",
 			"sleep_for" : "3600", # 1 hour
 			"comment_char" : "#",
+			"double_line_char" : "&",
 			"dictionary_path" : "./dict/sayings.txt",		
 }
