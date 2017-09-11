@@ -107,10 +107,12 @@ def iteration():
     if (send_tweet(line, connection) is True):
         dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         log.info("Tweet sent with the line: %s at time %s", line, dateTime)
+        print("Tweet sent with the line: %s at time %s", line, dateTime)
         return True
     else:
         dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         log.info("Caught a tweepy error. at %s Trying again...", dateTime)
+        print("Caught a tweepy error. at %s Trying again...", dateTime)
         return False
 
 # Main.

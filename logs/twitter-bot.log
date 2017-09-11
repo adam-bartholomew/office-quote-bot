@@ -3889,3 +3889,23 @@ INFO:root:Sending tweet...
 INFO:tweepy.binder:PARAMS: {'status': b'Andt Bernard does not lose contests, he wins them or he quits them because they are unfair.\n'}
 INFO:root:Tweet sent with the line: Andt Bernard does not lose contests, he wins them or he quits them because they are unfair.
  at time 2017-09-07 13:36
+INFO:root:Starting up for the first time...
+INFO:root:Reading dictionary located at ./dict/sayings.txt
+INFO:root:Checking followers...
+INFO:tweepy.binder:PARAMS: {}
+INFO:tweepy.binder:PARAMS: {'screen_name': b'Office_Bot'}
+INFO:tweepy.binder:PARAMS: {}
+INFO:root:All followers are followed.
+INFO:root:All followers are followed.
+INFO:root:Follower check COMPLETE.
+INFO:root:Connecting to twitter...
+INFO:root:Connected.
+INFO:root:Choosing tweet...
+INFO:root:Choosing line.
+INFO:root:pointer = 17, randomInt = 17, numberOLines = 84 
+INFO:root:Line Chosen: 17 : Well, happy birthday, Jesus. Sorry your party's so lame.
+
+INFO:root:Sending tweet...
+INFO:tweepy.binder:PARAMS: {'status': b"Well, happy birthday, Jesus. Sorry your party's so lame.\n"}
+INFO:root:Tweet sent with the line: Well, happy birthday, Jesus. Sorry your party's so lame.
+ at time 2017-09-11 17:28
