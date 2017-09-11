@@ -1,4 +1,6 @@
 ## Ignore compiled Python
 __pycache__/
 *.pyc
+
+## Ignore configuration files
 config.py
