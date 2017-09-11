@@ -1,4 +1,4 @@
-config = {  "api_key" : "",
+config = {  "api_key" : "asfasdf",
 			"api_secret" : "",
 			"access_token" : "",
 			"access_secret" : "",
