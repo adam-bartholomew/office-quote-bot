@@ -2,6 +2,9 @@
 #### Created by Adam Bartholomew, using Python and Tweepy.
 #### With credit and inspiration from [Josh Richard](https://github.com/joshuarichard)
 
+Deployed and hosted using [AWS](https://aws.amazon.com/)
+* Using EC2 Free Tier
+
 
 Further Reading and Library Documentation
 -------
