@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 
 ## Ignore configuration files
-config_local.py
+config.py
 
 ## Ignore IntelliJ specific files
 .idea

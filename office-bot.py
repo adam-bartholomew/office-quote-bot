@@ -16,7 +16,6 @@ from config import config
 from quoteDict import quotes
 
 
-
 # Get information from config file.
 CONSUMER_KEY = config["consumer_key"]
 CONSUMER_SECRET = config["consumer_secret"]
@@ -45,7 +44,7 @@ def send_tweet(quote, connection):
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     if quote != "":
         try:
-            # connection.update_status(status=quote)
+            connection.update_status(status=quote)
             return True
         except tweepy.TweepyException as err:
             log.error("%s: Error occurred sending tweet: ", err)
