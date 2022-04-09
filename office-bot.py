@@ -6,18 +6,20 @@
 
 # Import needed modules.
 import tweepy
-import time
-import sys
 import datetime
+import time
 import logging
 import random
-import json
 
+# Custom imports
 from config import config
+from quoteDict import quotes
 
-# Get information from config file. TODO: conceal the tokens for the api
-API_KEY = config["api_key"]
-API_SECRET = config["api_secret"]
+
+
+# Get information from config file.
+CONSUMER_KEY = config["consumer_key"]
+CONSUMER_SECRET = config["consumer_secret"]
 ACCESS_TOKEN = config["access_token"]
 ACCESS_SECRET = config["access_secret"]
 COMMENT_CHAR = config["comment_char"]
@@ -31,62 +33,70 @@ log = logging.getLogger()
 
 # Setup connection with Twitter.
 def connect():
-    auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
-    auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
+    auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
     connection = tweepy.API(auth)
     return connection
 
 
 # Sends a tweet given the line and connection to the api.
-#       line - the line to tweet.
-#       connection - instance of the api to use.
-def send_tweet(line, connection):
+#       quote - what to tweet.
+#       connection - api connection
+def send_tweet(quote, connection):
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    if line != "":
+    if quote != "":
         try:
-            connection.update_status(status=line)
+            # connection.update_status(status=quote)
             return True
-        except tweepy.TweepError as error:
-            log.error(error)
-            log.info("error occurred at %s", date)
+        except tweepy.TweepyException as err:
+            log.error("%s: Error occurred sending tweet: ", err)
             return False
 
 
-# Chooses a line from the dictionary.
-def choose_line():
-    log.info("Choosing line.")
-    filename = open(DICTIONARY_PATH, "r")
-    filelist = filename.readlines()
-    filename.close()
-
-    lines = 0
-    for line in filelist:
-        lines += 1
+# Chooses a quote from the dictionary.
+def get_quote():
+    log.info("Choosing quote...")
 
     random.seed()
-    random_int = random.randint(0, lines)
+    index = random.randint(0, len(quotes))
+    quote = list(quotes.keys())[index]
 
-    pointer = 0
-    for line in filelist:
-        if pointer == random_int:
-            if line[0] != COMMENT_CHAR:
-                log.info("pointer = %s, random_int = %s, numberOLines = %s ", pointer, random_int, lines)
-                log.info("Line Chosen: %s : %s", random_int, line)
-                return line
-            else:
-                iteration()
-        else:
-            pointer += 1
+    while is_used(quote):
+        index = random.randint(0, len(quotes))
+        quote = list(quotes.keys())[index]
+
+    info = list(quotes.values())[index]
+    quotes[quote]['used'] = 1
+
+    msg = "\"%s\" - %s" % (quote, info.get('source'))
+    log.info("Quote selected: [" + msg + "]\n" + str(quotes[quote]))
+    print(msg)
+
+    return msg
+
+    # pointer = 0
+    # for line in filelist:
+    #    if pointer == random_int:
+    #        if line[0] != COMMENT_CHAR:
+    #            log.info("pointer = %s, random_int = %s, numberOLines = %s ", pointer, random_int, lines)
+    #            log.info("Line Chosen: %s : %s", random_int, line)
+    #            return line
+    #        else:
+    #           iteration()
+    #  else:
+    #      pointer += 1
 
 
-# def check_for_duplicates(line, connection):
+def is_used(quote):
+    list_of_values = list(quotes.get(quote).values())
+    return bool(list_of_values[1])
+
 
 # Follows someone back if they follow this account.
 def check_followers():
     log.info("Checking followers...")
     connection = connect()
     bot = connection.me()
-    # log.info(connection.followers())
+    log.info(connection.followers())
     for follower in connection.followers():
         if not follower.following:
             log.info("ALERT: Now following %s!", follower.screen_name)
@@ -99,35 +109,40 @@ def check_followers():
 # Manages the process of sending a tweet.
 def iteration():
     log.info("Connecting to twitter...")
-    connection = connect()
-    line = ""
-    log.info("Connected.")
+    try:
+        connection = connect()
+    except tweepy.TweepyException as err:
+        log.warning("Connection could not be made to Twitter:\n - %s", err)
+    else:
+        log.info("Connected...")
 
-    log.info("Choosing tweet...")
-    line = choose_line()
+    quote = get_quote()
 
     log.info("Sending tweet...")
-    if send_tweet(line, connection) is True:
+    if send_tweet(quote, connection) is True:
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        log.info("Tweet sent with the line: %s at time %s", line, date)
-        print("Tweet sent with the line: %s at time %s", line, date)
+        log.info("Tweet sent with the quote: %s at time %s", quote, date)
+        print("Tweet sent with the quote: [%s] at time %s", quote, date)
         return True
     else:
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        log.info("Caught a tweepy error. at %s Trying again...", date)
+        log.error("Caught a tweepy error. at %s Trying again...", date)
         print("Caught a tweepy error. at %s Trying again...", date)
         return False
 
 
-# Main.
+# Main function
 def main():
-    logging.basicConfig(filename="./logs/twitter-bot.log", level=logging.INFO)
+    base_dir = "./logs/"
+    date = datetime.datetime.now().strftime("%Y%m%d")
+    logfile = base_dir + "twitter-bot_" + date + ".log"
+    logging.basicConfig(filename=logfile, level=logging.INFO)
     log.info("Starting up for the first time...")
     log.info("Reading dictionary located at %s", DICTIONARY_PATH)
 
-    # Sends a new tweet every hour and checks for new followers.
+    # Sends a new tweet and checks for new followers, sleeps.
     while True:
-        check_followers()
+        # check_followers()
         did_tweet = iteration()
         if did_tweet is False:
             did_tweet = iteration()
