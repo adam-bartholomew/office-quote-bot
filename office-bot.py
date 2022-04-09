@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# A twitter bot that tweets random quotes from "The Office".
+# A Twitter bot that tweets random quotes from "The Office".
 # Created by Adam Bartholomew.
 
 # Import needed modules.
@@ -28,70 +28,73 @@ SLEEP_FOR = int(config["sleep_for"])
 # Create logger.
 log = logging.getLogger()
 
+
 # Setup connection with Twitter.
 def connect():
-	auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
-	auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
-	connection = tweepy.API(auth)
-	return connection
+    auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
+    auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
+    connection = tweepy.API(auth)
+    return connection
 
-# Sends a tweet given the line and connection to the api. 
+
+# Sends a tweet given the line and connection to the api.
 #       line - the line to tweet.
 #       connection - instance of the api to use.
 def send_tweet(line, connection):
-    dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     if line != "":
         try:
             connection.update_status(status=line)
             return True
         except tweepy.TweepError as error:
             log.error(error)
-            log.info("error occured at %s", dateTime)
+            log.info("error occurred at %s", date)
             return False
+
 
 # Chooses a line from the dictionary.
 def choose_line():
     log.info("Choosing line.")
-    fileName = open(DICTIONARY_PATH, "r")
-    fileList = fileName.readlines()
-    fileName.close()
+    filename = open(DICTIONARY_PATH, "r")
+    filelist = filename.readlines()
+    filename.close()
 
-    numberOfLines = 0
-    for line in fileList:
-        numberOfLines += 1
+    lines = 0
+    for line in filelist:
+        lines += 1
 
     random.seed()
-    randomInt = random.randint(0, numberOfLines)
+    random_int = random.randint(0, lines)
 
     pointer = 0
-    for line in fileList:
-        if pointer == randomInt:
+    for line in filelist:
+        if pointer == random_int:
             if line[0] != COMMENT_CHAR:
-                log.info("pointer = %s, randomInt = %s, numberOLines = %s ", pointer, randomInt, numberOfLines)
-                log.info("Line Chosen: %s : %s", randomInt, line)
+                log.info("pointer = %s, random_int = %s, numberOLines = %s ", pointer, random_int, lines)
+                log.info("Line Chosen: %s : %s", random_int, line)
                 return line
             else:
                 iteration()
         else:
             pointer += 1
 
-#def check_for_duplicates(line, connection):
+
+# def check_for_duplicates(line, connection):
 
 # Follows someone back if they follow this account.
 def check_followers():
     log.info("Checking followers...")
     connection = connect()
-    theBot = connection.me()
-    #log.info(connection.followers())
+    bot = connection.me()
+    # log.info(connection.followers())
     for follower in connection.followers():
-        if follower.following == False:
+        if not follower.following:
             log.info("ALERT: Now following %s!", follower.screen_name)
-            userName = follower.screen_name
-            userId = follower.id
-            connection.create_friendship(userId, userName)
+            connection.create_friendship(follower.id, follower.screen_name)
         else:
             log.info("All followers are followed.")
     log.info("Follower check COMPLETE.")
+
 
 # Manages the process of sending a tweet.
 def iteration():
@@ -104,16 +107,17 @@ def iteration():
     line = choose_line()
 
     log.info("Sending tweet...")
-    if (send_tweet(line, connection) is True):
-        dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        log.info("Tweet sent with the line: %s at time %s", line, dateTime)
-        print("Tweet sent with the line: %s at time %s", line, dateTime)
+    if send_tweet(line, connection) is True:
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        log.info("Tweet sent with the line: %s at time %s", line, date)
+        print("Tweet sent with the line: %s at time %s", line, date)
         return True
     else:
-        dateTime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        log.info("Caught a tweepy error. at %s Trying again...", dateTime)
-        print("Caught a tweepy error. at %s Trying again...", dateTime)
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        log.info("Caught a tweepy error. at %s Trying again...", date)
+        print("Caught a tweepy error. at %s Trying again...", date)
         return False
+
 
 # Main.
 def main():
@@ -124,11 +128,12 @@ def main():
     # Sends a new tweet every hour and checks for new followers.
     while True:
         check_followers()
-        didTweet = iteration()
-        if (didTweet is False):
-            didTweet = iteration()
+        did_tweet = iteration()
+        if did_tweet is False:
+            did_tweet = iteration()
         else:
             time.sleep(SLEEP_FOR)
 
+
 if __name__ == "__main__":
-	main()
+    main()
