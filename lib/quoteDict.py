@@ -124,7 +124,7 @@ quotes = {
         "source": speaker[5], "used": 0},
 
     "Who is Justice Beaver?": {
-        "source": speaker[4], "used": 0},
+        "source": speaker[2], "used": 0},
     "Absolutely I do.": {
         "source": speaker[2], "used": 0},
     "Reject a woman, and she will never let it go, one of the many defects of their kind. Also, weak arms.": {

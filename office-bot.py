@@ -13,7 +13,7 @@ import random
 
 # Custom imports
 from config import config
-from quoteDict import quotes
+from lib.quoteDict import quotes
 
 
 # Get information from config file.
@@ -23,7 +23,6 @@ ACCESS_TOKEN = config["access_token"]
 ACCESS_SECRET = config["access_secret"]
 COMMENT_CHAR = config["comment_char"]
 DOUBLE_LINE_CHAR = config["double_line_char"]
-DICTIONARY_PATH = config["dictionary_path"]
 SLEEP_FOR = int(config["sleep_for"])
 
 # Create logger.
@@ -44,7 +43,7 @@ def send_tweet(quote, connection):
     date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     if quote != "":
         try:
-            connection.update_status(status=quote)
+            #connection.update_status(status=quote)
             return True
         except tweepy.TweepyException as err:
             log.error("%s: Error occurred sending tweet: ", err)
@@ -137,7 +136,6 @@ def main():
     logfile = base_dir + "twitter-bot_" + date + ".log"
     logging.basicConfig(filename=logfile, level=logging.INFO)
     log.info("Starting up for the first time...")
-    log.info("Reading dictionary located at %s", DICTIONARY_PATH)
 
     # Sends a new tweet and checks for new followers, sleeps.
     while True:
