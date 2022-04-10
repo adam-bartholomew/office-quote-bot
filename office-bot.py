@@ -4,7 +4,7 @@
 # A Twitter bot that tweets random quotes from "The Office".
 # Created by Adam Bartholomew.
 
-# Import needed modules.
+# Import needed python modules.
 import tweepy
 import datetime
 import time
@@ -14,7 +14,6 @@ import random
 # Custom imports
 from config import config
 from lib.quoteDict import quotes
-
 
 # Get information from config file.
 CONSUMER_KEY = config["consumer_key"]
@@ -28,9 +27,13 @@ SLEEP_FOR = int(config["sleep_for"])
 # Create logger.
 log = logging.getLogger()
 
+# Calculate sleep time
+sleep_time = datetime.timedelta(seconds=int(SLEEP_FOR))
+
 
 # Setup connection with Twitter.
 def connect():
+    log.info("Connecting to Twitter...")
     auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
     connection = tweepy.API(auth)
     return connection
@@ -39,11 +42,12 @@ def connect():
 # Sends a tweet given the line and connection to the api.
 #       quote - what to tweet.
 #       connection - api connection
-def send_tweet(quote, connection):
-    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+def send_tweet(quote, connection, date):
     if quote != "":
         try:
-            #connection.update_status(status=quote)
+            # connection.update_status(status=quote)
+            log.info("[%s]: Tweet sent with the quote %s", date, quote)
+            print("[%s]: Tweet sent with the quote %s", date, quote)
             return True
         except tweepy.TweepyException as err:
             log.error("%s: Error occurred sending tweet: ", err)
@@ -71,18 +75,6 @@ def get_quote():
 
     return msg
 
-    # pointer = 0
-    # for line in filelist:
-    #    if pointer == random_int:
-    #        if line[0] != COMMENT_CHAR:
-    #            log.info("pointer = %s, random_int = %s, numberOLines = %s ", pointer, random_int, lines)
-    #            log.info("Line Chosen: %s : %s", random_int, line)
-    #            return line
-    #        else:
-    #           iteration()
-    #  else:
-    #      pointer += 1
-
 
 def is_used(quote):
     list_of_values = list(quotes.get(quote).values())
@@ -105,8 +97,8 @@ def check_followers():
 
 
 # Manages the process of sending a tweet.
-def iteration():
-    log.info("Connecting to twitter...")
+def iteration(date):
+    log.info("[%s] Start of a new iteration.", date)
     try:
         connection = connect()
     except tweepy.TweepyException as err:
@@ -117,33 +109,34 @@ def iteration():
     quote = get_quote()
 
     log.info("Sending tweet...")
-    if send_tweet(quote, connection) is True:
-        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        log.info("Tweet sent with the quote: %s at time %s", quote, date)
-        print("Tweet sent with the quote: [%s] at time %s", quote, date)
+    if send_tweet(quote, connection, date) is True:
+        # date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+        # log.info("Tweet sent with the quote: %s at time %s", quote, date)
+        # print("Tweet sent with the quote: [%s] at time %s", quote, date)
         return True
     else:
-        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        log.error("Caught a tweepy error. at %s Trying again...", date)
-        print("Caught a tweepy error. at %s Trying again...", date)
+        log.error("[%s]: Caught a tweepy error, trying again...", date)
+        print("[%s]: Caught a tweepy error, trying again...", date)
         return False
 
 
 # Main function
 def main():
     base_dir = "./logs/"
-    date = datetime.datetime.now().strftime("%Y%m%d")
-    logfile = base_dir + "twitter-bot_" + date + ".log"
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    logfile = base_dir + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + ".log"
     logging.basicConfig(filename=logfile, level=logging.INFO)
     log.info("Starting up for the first time...")
 
     # Sends a new tweet and checks for new followers, sleeps.
     while True:
         # check_followers()
-        did_tweet = iteration()
+        did_tweet = iteration(date)
         if did_tweet is False:
-            did_tweet = iteration()
+            did_tweet = iteration(date)
         else:
+            log.info("Going to sleep for %s ", sleep_time)
+            print("Sleeping...")
             time.sleep(SLEEP_FOR)
 
 
