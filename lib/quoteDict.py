@@ -160,3 +160,11 @@ quotes = {
     "Are you on Email?": {
         "source": speaker[3], "used": 0},
 }
+
+
+# used value is quotes[quote]['used']
+def get_least_used():
+    print(quotes.items)
+    #for quote in quotes:
+        #print(quotes[quote]['used'].values())
+
