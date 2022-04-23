@@ -152,7 +152,7 @@ def main():
     while conn:
         check_followers(conn)
         did_tweet = iteration(conn)
-        if did_tweet is False:
+        while did_tweet is False:
             did_tweet = iteration(conn)
         else:
             log.info("Going to sleep for %s ", sleep_time)

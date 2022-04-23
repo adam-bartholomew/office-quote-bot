@@ -167,4 +167,3 @@ def get_least_used():
     print(quotes.items)
     #for quote in quotes:
         #print(quotes[quote]['used'].values())
-
