@@ -1,3 +1,4 @@
+# Dictionary of Speaker values for quotes
 speaker = {
     0: "Michael Scott",
     1: "Jim Halpert",
@@ -15,6 +16,7 @@ speaker = {
     13: "Toby Flenderson"
 }
 
+# Dictionary of Quotes
 quotes = {
     "That's what she said!": {
         "source": speaker[0], "used": 0},
@@ -66,8 +68,8 @@ quotes = {
         "source": speaker[0], "used": 0},
     "I need a username. And I have a great one. Little Kid Lover. That way people will know exactly where my priorities are at.": {
         "source": speaker[0], "used": 0},
-    "And I knew exactly what to do. But in a much more real sense, I had no idea what to do.":
-        {"source": speaker[0], "used": 0},
+    "And I knew exactly what to do. But in a much more real sense, I had no idea what to do.":{
+        "source": speaker[0], "used": 0},
     "Oh God, my mind is going a mile an hour.": {
         "source": speaker[0], "used": 0},
     "I hate disappointing just one person, and I really hate disappointing everyone. But I love Burlington Coat Factory.": {
@@ -162,8 +164,58 @@ quotes = {
 }
 
 
-# used value is quotes[quote]['used']
-def get_least_used():
-    print(quotes.items)
-    #for quote in quotes:
-        #print(quotes[quote]['used'].values())
+# Returns a dictionary of the most used quote(s)
+def get_most_used_dict():
+    number = 0
+    most_used = dict()
+    for quote in quotes:
+        if quotes[quote]['used'] > number:
+            # reset the most used quotes dict
+            number = quotes[quote]['used']
+            most_used.clear()
+            most_used[quote] = {}
+            most_used[quote]['source'] = quotes[quote]['source']
+            most_used[quote]['used'] = quotes[quote]['used']
+        elif quotes[quote]['used'] == number:
+            most_used[quote] = {}
+            most_used[quote]['source'] = quotes[quote]['source']
+            most_used[quote]['used'] = quotes[quote]['used']
+
+    print('Most used Dictionary contains %s items.' % len(most_used))
+    return most_used
+
+
+# Returns a dictionary of the least used quote(s)
+def get_least_used_dict():
+    number = 0
+    least_used = dict()
+    for quote in quotes:
+        if quotes[quote]['used'] < number:
+            least_used.clear()
+            least_used[quote] = {}
+            least_used[quote]['source'] = quotes[quote]['source']
+            least_used[quote]['used'] = quotes[quote]['used']
+        elif quotes[quote]['used'] == number:
+            least_used[quote] = {}
+            least_used[quote]['source'] = quotes[quote]['source']
+            least_used[quote]['used'] = quotes[quote]['used']
+
+    print('Least used Dictionary contains %s items.' % len(least_used))
+    return least_used
+
+
+# Checks to see if a given quote has been used at least once
+def is_used(quote):
+    return bool(quotes[quote]['used'] > 0)
+
+
+# Sets the used value of a specific quote
+def set_used(quote, value):
+    quotes[quote]['used'] = value
+
+
+# Sets all quotes used values back to zero
+def mark_all_quotes_as_unused():
+    for quote in quotes:
+        set_used(quote, 0)
+

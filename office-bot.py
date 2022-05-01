@@ -73,11 +73,11 @@ def get_quote():
         index = random.randint(0, len(quoteDict.quotes))
         quote = list(quoteDict.quotes.keys())[index]
 
-    info = list(quoteDict.quotes.values())[index]
+    quote_speaker = (list(quoteDict.quotes.values())[index]).get('source')
     quoteDict.quotes[quote]['used'] = 1
 
-    msg = "\"%s\" - %s" % (quote, info.get('source'))
-    log.info("Quote selected: %s\n  %s", quote,  str(quoteDict.quotes[quote]))
+    msg = "\"%s\" - %s" % (quote, quote_speaker)
+    log.info("Quote selected \"%s\": %s", quote,  str(quoteDict.quotes[quote]))
 
     return msg
 
@@ -87,29 +87,6 @@ def is_used(quote):
     return bool(list_of_values[1])
 
 
-def get_most_used():
-    # todo: set all of the quotes to be unused once they all have been used th same # of times. No 1 quote can be used a 2nd time before they all have been used once.
-    print('get most used quote')
-
-
-def get_least_used_quotes():
-    times_used = 0
-    least_used = list()
-
-    least_used_dict = quoteDict.quotes
-    # print(least_used_dict)
-
-    for quote in quoteDict.quotes:
-        # print(quote['used'])
-        if quoteDict.quotes[quote]['used'] == times_used:
-            least_used.append(quote)
-        elif quote['used'] < times_used:
-            least_used.clear()
-            least_used.append(quote)
-
-    return least_used
-
-
 # Follows someone back if they follow this account.
 def check_followers(conn):
     log.info("Checking %s's followers", conn.verify_credentials().screen_name)
@@ -117,9 +94,11 @@ def check_followers(conn):
         if not follower.following:
             try:
                 # conn.create_friendship(follower.screen_name, follower.id)
-                log.info("ALERT: Now following %s!", follower.screen_name)
+                print("create friendship")
             except tweepy.TweepyException as err:
                 log.info("An unknown exception occurred while following: %s", err)
+            else:
+                log.info("ALERT: Now following %s!", follower.screen_name)
 
     log.info("All followers are now followed.")
     log.info("Follower check COMPLETE.")
@@ -138,7 +117,7 @@ def iteration(conn):
 
 # Main function
 def main():
-    quoteDict.get_least_used()
+    #quoteDict.get_most_used_dict()
     log.info("Starting up for the first time")
 
     try:
@@ -162,3 +141,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # Do any testing here, but first comment out main():
+
