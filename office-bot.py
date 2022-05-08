@@ -46,12 +46,13 @@ def connect():
 # Sends a tweet given the line and connection to the api.
 #       quote - what to tweet.
 #       conn - api connection
-def send_tweet(quote, conn):
-    if quote != "":
+def send_tweet(quote, tweet, conn):
+    if tweet and isinstance(tweet, str):
         try:
-            # conn.update_status(status=quote)
-            log.info("Tweet sent: %s", quote)
-            print("Tweet sent: %s" % quote)
+            # conn.update_status(status=tweet)
+            log.info("Tweet sent: %s", tweet)
+            print("Tweet sent: %s" % tweet)
+            quoteDict.increase_used_by_one(quote)
             return True
         except tweepy.TweepyException as err:
             log.error("Error occurred sending tweet: %s", err)
@@ -62,24 +63,23 @@ def send_tweet(quote, conn):
 def get_quote():
     log.info("Choosing quote...")
 
+    possible_options = quoteDict.get_least_used_dict()
     random.seed()
-    index = random.randint(0, len(quoteDict.quotes))
-    quote = list(quoteDict.quotes.keys())[index]
-    get_least_used_quotes()
+    index = random.randint(0, len(possible_options)-1)
+    quote = list(possible_options.keys())[index]
+    # get_least_used_quotes()
     # quote = random.choice(get_least_used_quotes())
     print("Quote Selected: %s" % quote)
 
-    while is_used(quote):
-        index = random.randint(0, len(quoteDict.quotes))
-        quote = list(quoteDict.quotes.keys())[index]
+    # while is_used(quote):
+    #   index = random.randint(0, len(quoteDict.quotes))
+    #   quote = list(quoteDict.quotes.keys())[index]
 
-    quote_speaker = (list(quoteDict.quotes.values())[index]).get('source')
-    quoteDict.quotes[quote]['used'] = 1
-
+    quote_speaker = (list(possible_options.values())[index]).get('source')
     msg = "\"%s\" - %s" % (quote, quote_speaker)
-    log.info("Quote selected \"%s\": %s", quote,  str(quoteDict.quotes[quote]))
+    log.info("Quote selected \"%s\": %s", quote, str(quoteDict.quotes[quote]))
 
-    return msg
+    return quote, msg
 
 
 def is_used(quote):
@@ -107,7 +107,8 @@ def check_followers(conn):
 # Manages the process of sending a tweet.
 def iteration(conn):
     log.info("Start of a new iteration.")
-    if send_tweet(get_quote(), conn) is True:
+    quote, tweet = get_quote()
+    if send_tweet(quote, tweet, conn) is True:
         return True
     else:
         log.error("Caught a tweepy error, trying again...")
@@ -117,7 +118,6 @@ def iteration(conn):
 
 # Main function
 def main():
-    #quoteDict.get_most_used_dict()
     log.info("Starting up for the first time")
 
     try:
