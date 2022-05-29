@@ -34,7 +34,7 @@ quotes = {
         "source": speaker[0], "used": 1},
     "Hi, I'm date Mike... Nice to meet me!": {
         "source": speaker[0], "used": 1},
-    "We are all Homos... Homosapiens.": {
+    "We are all Homos... Homo Sapiens.": {
         "source": speaker[0], "used": 1},
     "Just poopin'. You know how I be.": {
         "source": speaker[0], "used": 1},
