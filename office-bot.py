@@ -11,7 +11,7 @@ import time
 import logging
 import random
 
-# Custom imports
+# Custom imports.
 from config import config
 import lib.quoteDict as quoteDict
 
@@ -44,8 +44,8 @@ def connect():
 
 
 # Sends a tweet given the line and connection to the api.
-#       quote - what to tweet.
-#       conn - api connection
+#   quote - what the tweet will be.
+#   conn  - tweepy api connection.
 def send_tweet(quote, tweet, conn):
     if tweet and isinstance(tweet, str):
         try:
@@ -65,26 +65,14 @@ def get_quote():
 
     possible_options = quoteDict.get_least_used_dict()
     random.seed()
-    index = random.randint(0, len(possible_options)-1)
+    index = random.randint(0, len(possible_options) - 1)
+
     quote = list(possible_options.keys())[index]
-    # get_least_used_quotes()
-    # quote = random.choice(get_least_used_quotes())
-    print("Quote Selected: %s" % quote)
-
-    # while is_used(quote):
-    #   index = random.randint(0, len(quoteDict.quotes))
-    #   quote = list(quoteDict.quotes.keys())[index]
-
     quote_speaker = (list(possible_options.values())[index]).get('source')
     msg = "\"%s\" - %s" % (quote, quote_speaker)
     log.info("Quote selected \"%s\": %s", quote, str(quoteDict.quotes[quote]))
 
     return quote, msg
-
-
-def is_used(quote):
-    list_of_values = list(quoteDict.quotes.get(quote).values())
-    return bool(list_of_values[1])
 
 
 # Follows someone back if they follow this account.
@@ -94,14 +82,13 @@ def check_followers(conn):
         if not follower.following:
             try:
                 # conn.create_friendship(follower.screen_name, follower.id)
-                print("create friendship")
+                print("create friendship block")
             except tweepy.TweepyException as err:
-                log.info("An unknown exception occurred while following: %s", err)
+                log.info("An unknown exception occurred while trying to follow '%s': %s", follower.screen_name, err)
             else:
                 log.info("ALERT: Now following %s!", follower.screen_name)
 
-    log.info("All followers are now followed.")
-    log.info("Follower check COMPLETE.")
+    log.info("All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
 
 
 # Manages the process of sending a tweet.
@@ -116,14 +103,15 @@ def iteration(conn):
         return False
 
 
-# Main function
+# Main function.
 def main():
     log.info("Starting up for the first time")
+    conn = None
 
     try:
         conn = connect()
-    except tweepy.TweepyException as err:
-        log.warning("Connection could not be made to Twitter: - %s", err)
+    except tweepy.TweepyException as e:
+        log.warning("Connection could not be made to Twitter: - %s", e)
     else:
         log.info("Connection made successfully")
 
@@ -144,4 +132,3 @@ if __name__ == "__main__":
     main()
 
     # Do any testing here, but first comment out main():
-

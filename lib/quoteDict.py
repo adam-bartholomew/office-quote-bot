@@ -170,7 +170,6 @@ def get_most_used_dict():
     most_used = dict()
     for quote in quotes:
         if quotes[quote]['used'] > number:
-            # reset the most used quotes dict
             number = quotes[quote]['used']
             most_used.clear()
             most_used[quote] = {}
@@ -215,21 +214,21 @@ def set_used(quote, value):
     print('Setting used to %i - \"%s\" : %s' % (value, quote, quotes[quote]['used']))
 
 
-# Increases the used value of a quote by 1
+# Increases the used value of a quote by 1.
 def increase_used_by_one(quote):
     value = quotes[quote]['used']
     set_used(quote, value + 1)
 
 
-# Sets all quotes used values back to zero
+# Sets all quotes used values back to 0.
 def mark_all_quotes_as_unused():
     for quote in quotes:
         set_used(quote, 0)
 
 
-# Sets any "bad" used values to be zero - negative numbers or non int types
+# Sets any "bad" used values to 0 - negative or non int types.
 def check_dictionary():
     for quote in quotes:
-        if quotes[quote]['used'] < 0 or not isinstance(quotes[quote]['used'], int):
+        if quotes[quote]['used'] < 0 or not isinstance(quotes[quote]['used'], int) or quotes[quote]['used'] is None:
             set_used(quote, 0)
 
