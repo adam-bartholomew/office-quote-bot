@@ -7,7 +7,7 @@ Further Reading and Library Documentation:
 ------------------------------------------
 1. [Python](https://www.python.org/)
 2. [Tweepy](http://www.tweepy.org/)
-3[Twitter](https://www.twitter.com)
+3. [Twitter](https://www.twitter.com/)
 
 Personal Links:
 1. [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/)
