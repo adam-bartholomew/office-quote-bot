@@ -11,4 +11,4 @@ Further Reading and Library Documentation:
 
 Personal Links:
 1. [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/)
-2. [Github](https://github.com/adam-bartholomew)
+2. [Github](https://github.com/adam-bartholomew/)
