@@ -129,14 +129,15 @@ def main():
 
     # Sends a new tweet and checks for new followers, sleeps.
     while conn:
+        log.info("Start of connection loop.")
         check_followers(conn)
         did_tweet = iteration(conn)
         while did_tweet is False:
             did_tweet = iteration(conn)
-        else:
-            log.info("Going to sleep for %s ", sleep_time)
-            print("Sleeping...")
-            time.sleep(SLEEP_FOR)
+        # else:
+        log.info("Going to sleep for %s ", sleep_time)
+        print("Sleeping...")
+        time.sleep(SLEEP_FOR)
 
 
 if __name__ == "__main__":
