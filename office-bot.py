@@ -12,21 +12,23 @@ import logging
 import random
 
 # Custom imports.
-from config import config
+import config
 import lib.quoteDict as quoteDict
 
 # Get config info.
-CONSUMER_KEY = config["consumer_key"]
-CONSUMER_SECRET = config["consumer_secret"]
-ACCESS_TOKEN = config["access_token"]
-ACCESS_SECRET = config["access_secret"]
-COMMENT_CHAR = config["comment_char"]
-DOUBLE_LINE_CHAR = config["double_line_char"]
-SLEEP_FOR = int(config["sleep_for"])
-DATE_FORMAT = config["logging_date_format"]
-LOG_FORMAT = config["log_format"]
-BASE_LOG_DIR = config["base_log_dir"]
-BASE_LOG_EXT = config["base_log_extension"]
+CONSUMER_KEY = config.properties["consumer_key"]
+CONSUMER_SECRET = config.properties["consumer_secret"]
+ACCESS_TOKEN = config.properties["access_token"]
+ACCESS_SECRET = config.properties["access_secret"]
+COMMENT_CHAR = config.properties["comment_char"]
+DOUBLE_LINE_CHAR = config.properties["double_line_char"]
+SLEEP_FOR = int(config.properties["sleep_for"])
+DATE_FORMAT = config.properties["logging_date_format"]
+LOG_FORMAT = config.properties["log_format"]
+BASE_LOG_DIR = config.properties["base_log_dir"]
+BASE_LOG_EXT = config.properties["base_log_extension"]
+USE_CONN = config.get_use_connection()
+
 
 # Create variables.
 log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
@@ -49,9 +51,12 @@ def connect():
 def send_tweet(quote, tweet, conn):
     if tweet and isinstance(tweet, str):
         try:
-            # conn.update_status(status=tweet)
-            log.info("Tweet sent: %s", tweet)
-            print("Tweet sent: %s" % tweet)
+            if USE_CONN:
+                conn.update_status(status=tweet)
+                log.info("USE_CONN=%s | Tweet sent: %s", USE_CONN, tweet)
+                print("USE_CONN=%s | Tweet sent: %s" % (USE_CONN, tweet))
+            log.info("USE_CONN=%s | Tweet not sent: %s", USE_CONN, tweet)
+            print("USE_CONN=%s | Tweet not sent: %s" % (USE_CONN, tweet))
             quoteDict.increase_used_by_one(quote)
             return True
         except tweepy.TweepyException as err:
@@ -78,24 +83,26 @@ def get_quote():
 # Follows someone back if they follow this account.
 def check_followers(conn):
     log.info("Checking %s's followers", conn.verify_credentials().screen_name)
-    for follower in conn.get_followers():
-        if not follower.following:
-            try:
-                # conn.create_friendship(follower.screen_name, follower.id)
-                print("create friendship block")
-            except tweepy.TweepyException as err:
-                log.info("An unknown exception occurred while trying to follow '%s': %s", follower.screen_name, err)
-            else:
-                log.info("ALERT: Now following %s!", follower.screen_name)
 
-    log.info("All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
+    if USE_CONN:
+        for follower in conn.get_followers():
+            if not follower.following:
+                try:
+                    conn.create_friendship(follower.screen_name, follower.id)
+                except tweepy.TweepyException as err:
+                    log.info("An unknown exception occurred while trying to follow '%s': %s", follower.screen_name, err)
+                else:
+                    log.info("ALERT: Now following %s!", follower.screen_name)
+        log.info("All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
+    else:
+        log.info("USE_CONN is %s, not doing anything.", USE_CONN)
 
 
 # Manages the process of sending a tweet.
 def iteration(conn):
     log.info("Start of a new iteration.")
     quote, tweet = get_quote()
-    if send_tweet(quote, tweet, conn) is True:
+    if send_tweet(quote, tweet, conn):
         return True
     else:
         log.error("Caught a tweepy error, trying again...")
@@ -106,6 +113,7 @@ def iteration(conn):
 # Main function.
 def main():
     log.info("Starting up for the first time")
+    log.info("Property use_connection: - %s", USE_CONN)
     conn = None
 
     try:

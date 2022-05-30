@@ -68,7 +68,7 @@ quotes = {
         "source": speaker[0], "used": 1},
     "I need a username. And I have a great one. Little Kid Lover. That way people will know exactly where my priorities are at.": {
         "source": speaker[0], "used": 1},
-    "And I knew exactly what to do. But in a much more real sense, I had no idea what to do.":{
+    "And I knew exactly what to do. But in a much more real sense, I had no idea what to do.": {
         "source": speaker[0], "used": 1},
     "Oh God, my mind is going a mile an hour.": {
         "source": speaker[0], "used": 1},
@@ -231,4 +231,3 @@ def check_dictionary():
     for quote in quotes:
         if quotes[quote]['used'] < 0 or not isinstance(quotes[quote]['used'], int) or quotes[quote]['used'] is None:
             set_used(quote, 0)
-
