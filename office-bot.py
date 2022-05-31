@@ -81,6 +81,7 @@ def get_quote():
 
 
 # Follows someone back if they follow this account.
+#   conn  - tweepy api connection.
 def check_followers(conn):
     log.info("Checking %s's followers", conn.verify_credentials().screen_name)
 
@@ -99,6 +100,7 @@ def check_followers(conn):
 
 
 # Manages the process of sending a tweet.
+#   conn  - tweepy api connection.
 def iteration(conn):
     log.info("Start of a new iteration.")
     quote, tweet = get_quote()
@@ -108,6 +110,34 @@ def iteration(conn):
         log.error("Caught a tweepy error, trying again...")
         print("Caught a tweepy error, trying again...")
         return False
+
+
+# Gets the "Best Friend", the user with whom we interacted with the most
+#   conn  - tweepy api connection.
+def get_best_friend(conn):
+    log.info("Getting %s's best friend.", conn.verify_credentials().screen_name)
+    followers = dict()
+    followers[conn.verify_credentials().id] = {}
+    followers[conn.verify_credentials().id]['screen_name'] = conn.verify_credentials().screen_name
+    followers[conn.verify_credentials().id]['num_dms'] = 0
+
+    if USE_CONN:
+        for follower in conn.get_followers():
+            followers[follower.id] = {}
+            followers[follower.id]['screen_name'] = follower.screen_name
+            followers[follower.id]['num_dms'] = 0
+
+        log.info("Grabbing direct messages.")
+        for dm in conn.get_direct_messages():
+            print(dm)
+            if int(dm.message_create['sender_id']) in followers:
+                followers[int(dm.message_create['sender_id'])]['num_dms'] += 1
+
+        # Continue this function here - grab retweets/likes
+    else:
+        log.info("USE_CONN is %s, not doing anything.", USE_CONN)
+
+    print(followers)
 
 
 # Main function.
@@ -137,6 +167,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #main()
 
     # Do any testing here, but first comment out main():
+    conn = connect()
+    get_best_friend(conn)
