@@ -1,14 +1,25 @@
-# A Twitter Bot that tweets random quotes from "The Office"
-### Created by Adam Bartholomew, using Python and Tweepy.
+# A Twitter Bot that tweets random quotes from the TV show "The Office"
+### Created by [Adam Bartholomew](https://www.linkedin.com/in/adam-bartholomew/) with [Python](https://www.python.org/) and [Tweepy](https://docs.tweepy.org/en/stable/index.html).
 _With credit and inspiration from [Josh Richard](https://github.com/joshuarichard)_
 
+#### Notes:
+* This connects to my own personal Twitter account [here](https://twitter.com/The_Adumb).
+* The bot used to be hosted via AWS on a EC2 free tier account, but I removed that in order to avoid being charged once I went past any service limits. Now it is only run locally.
+
+#### Purpose:
+* Learn and explore how to interact with an API. 
+* Maintain and Expand my knowledge of Python. 
+* Explore any creative ideas.
+
+#### Lessons Learned:
+* How to set up a custom logger.
+* How to package a library and import it into the main program.
+* How to define dictionaries and functions to access/modify those dictionaries.
 
 Further Reading and Library Documentation:
 ------------------------------------------
-1. [Python](https://www.python.org/)
-2. [Tweepy](http://www.tweepy.org/)
+1. [Python Website](https://www.python.org/)
+2. [Tweepy Library](http://www.tweepy.org/)
 3. [Twitter](https://www.twitter.com/)
-
-Personal Links:
-1. [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/)
-2. [Github](https://github.com/adam-bartholomew/)
+4. Adam Bartholomew's [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/)
+5. Adam bartholomew's [GitHub](https://github.com/adam-bartholomew/)
