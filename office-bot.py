@@ -53,14 +53,14 @@ def send_tweet(quote, tweet, conn):
         try:
             if USE_CONN:
                 conn.update_status(status=tweet)
-                log.info("USE_CONN=%s | Tweet sent: %s", USE_CONN, tweet)
-                print("USE_CONN=%s | Tweet sent: %s" % (USE_CONN, tweet))
-            log.info("USE_CONN=%s | Tweet not sent: %s", USE_CONN, tweet)
-            print("USE_CONN=%s | Tweet not sent: %s" % (USE_CONN, tweet))
+                log.info(f"USE_CONN={USE_CONN} | Tweet sent: {tweet}")
+                print(f"USE_CONN={USE_CONN} | Tweet sent: {tweet}")
+            log.info(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
+            print(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
             quoteDict.increase_used_by_one(quote)
             return True
         except tweepy.TweepyException as err:
-            log.error("Error occurred sending tweet: %s", err)
+            log.error(f"Error occurred sending tweet: {err}")
             return False
 
 
@@ -75,7 +75,7 @@ def get_quote():
     quote = list(possible_options.keys())[index]
     quote_speaker = (list(possible_options.values())[index]).get('source')
     msg = "\"%s\" - %s" % (quote, quote_speaker)
-    log.info("Quote selected \"%s\": %s", quote, str(quoteDict.quotes[quote]))
+    log.info(f"Quote selected \"{quote}\": {str(quoteDict.quote_dict[quote])}")
 
     return quote, msg
 
@@ -83,7 +83,7 @@ def get_quote():
 # Follows someone back if they follow this account.
 #   conn  - tweepy api connection.
 def check_followers(conn):
-    log.info("Checking %s's followers", conn.verify_credentials().screen_name)
+    log.info(f"Checking {conn.verify_credentials().screen_name}'s followers")
 
     if USE_CONN:
         for follower in conn.get_followers():
@@ -91,12 +91,12 @@ def check_followers(conn):
                 try:
                     conn.create_friendship(follower.screen_name, follower.id)
                 except tweepy.TweepyException as err:
-                    log.info("An unknown exception occurred while trying to follow '%s': %s", follower.screen_name, err)
+                    log.info(f"An unknown exception occurred while trying to follow '{follower.screen_name}': {err}")
                 else:
-                    log.info("ALERT: Now following %s!", follower.screen_name)
+                    log.info(f"ALERT: Now following {follower.screen_name}!")
         log.info("All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
     else:
-        log.info("USE_CONN is %s, not doing anything.", USE_CONN)
+        log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
 
 
 # Manages the process of sending a tweet.
@@ -115,7 +115,7 @@ def iteration(conn):
 # Gets the "Best Friend", the user with whom we interacted with the most
 #   conn  - tweepy api connection.
 def get_best_friend(conn):
-    log.info("Getting %s's best friend.", conn.verify_credentials().screen_name)
+    log.info(f"Getting {conn.verify_credentials().screen_name}'s best friend.")
     followers = dict()
     followers[conn.verify_credentials().id] = {}
     followers[conn.verify_credentials().id]['screen_name'] = conn.verify_credentials().screen_name
@@ -135,7 +135,7 @@ def get_best_friend(conn):
 
         # Continue this function here - grab retweets/likes
     else:
-        log.info("USE_CONN is %s, not doing anything.", USE_CONN)
+        log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
 
     print(followers)
 
@@ -143,13 +143,13 @@ def get_best_friend(conn):
 # Main function.
 def main():
     log.info("Starting up for the first time")
-    log.info("Property use_connection: - %s", USE_CONN)
+    log.info(f"Property use_connection: - {USE_CONN}")
     conn = None
 
     try:
         conn = connect()
     except tweepy.TweepyException as e:
-        log.warning("Connection could not be made to Twitter: - %s", e)
+        log.warning(f"Connection could not be made to Twitter: - {e}")
     else:
         log.info("Connection made successfully")
 
@@ -161,7 +161,7 @@ def main():
         while did_tweet is False:
             did_tweet = iteration(conn)
         # else:
-        log.info("Going to sleep for %s ", sleep_time)
+        log.info(f"Going to sleep for {sleep_time}")
         print("Sleeping...")
         time.sleep(SLEEP_FOR)
 
