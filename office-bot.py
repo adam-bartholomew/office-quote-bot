@@ -4,14 +4,14 @@
 # A Twitter bot that tweets random quotes from "The Office".
 # Created by Adam Bartholomew.
 
-# Import needed python modules.
+# Standard libraries.
 import tweepy
 import datetime
 import time
 import logging
 import random
 
-# Custom imports.
+# Custom libraries.
 import config
 import lib.quoteDict as quoteDict
 
@@ -20,14 +20,13 @@ CONSUMER_KEY = config.properties["consumer_key"]
 CONSUMER_SECRET = config.properties["consumer_secret"]
 ACCESS_TOKEN = config.properties["access_token"]
 ACCESS_SECRET = config.properties["access_secret"]
-COMMENT_CHAR = config.properties["comment_char"]
-DOUBLE_LINE_CHAR = config.properties["double_line_char"]
 SLEEP_FOR = int(config.properties["sleep_for"])
 DATE_FORMAT = config.properties["logging_date_format"]
 LOG_FORMAT = config.properties["log_format"]
 BASE_LOG_DIR = config.properties["base_log_dir"]
 BASE_LOG_EXT = config.properties["base_log_extension"]
 USE_CONN = config.get_use_connection()
+IMPORT_PATH = config.properties["import_path"]
 
 
 # Create variables.
@@ -40,7 +39,7 @@ used_quotes = {}
 
 # Setup connection with Twitter.
 def connect():
-    log.info("Attempting to connect to Twitter.")
+    log.info(f"Attempting to connect to Twitter.")
     auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
     return tweepy.API(auth)
 
@@ -66,7 +65,7 @@ def send_tweet(quote, tweet, conn):
 
 # Chooses a quote from the dictionary.
 def get_quote():
-    log.info("Choosing quote...")
+    log.info(f"Choosing quote...")
 
     possible_options = quoteDict.get_least_used_dict()
     random.seed()
@@ -94,7 +93,7 @@ def check_followers(conn):
                     log.info(f"An unknown exception occurred while trying to follow '{follower.screen_name}': {err}")
                 else:
                     log.info(f"ALERT: Now following {follower.screen_name}!")
-        log.info("All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
+        log.info(f"All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
     else:
         log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
 
@@ -102,13 +101,13 @@ def check_followers(conn):
 # Manages the process of sending a tweet.
 #   conn  - tweepy api connection.
 def iteration(conn):
-    log.info("Start of a new iteration.")
+    log.info(f"Start of a new iteration.")
     quote, tweet = get_quote()
     if send_tweet(quote, tweet, conn):
         return True
     else:
-        log.error("Caught a tweepy error, trying again...")
-        print("Caught a tweepy error, trying again...")
+        log.error(f"Caught a tweepy error, trying again...")
+        print(f"Caught a tweepy error, trying again...")
         return False
 
 
@@ -127,13 +126,13 @@ def get_best_friend(conn):
             followers[follower.id]['screen_name'] = follower.screen_name
             followers[follower.id]['num_dms'] = 0
 
-        log.info("Grabbing direct messages.")
+        log.info(f"Grabbing direct messages.")
         for dm in conn.get_direct_messages():
             print(dm)
             if int(dm.message_create['sender_id']) in followers:
                 followers[int(dm.message_create['sender_id'])]['num_dms'] += 1
 
-        # Continue this function here - grab retweets/likes
+        # todo: Continue this function here - grab retweets/likes
     else:
         log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
 
@@ -142,7 +141,7 @@ def get_best_friend(conn):
 
 # Main function.
 def main():
-    log.info("Starting up for the first time")
+    log.info(f"Starting up for the first time")
     log.info(f"Property use_connection: - {USE_CONN}")
     conn = None
 
@@ -151,24 +150,26 @@ def main():
     except tweepy.TweepyException as e:
         log.warning(f"Connection could not be made to Twitter: - {e}")
     else:
-        log.info("Connection made successfully")
+        log.info(f"Connection made successfully")
 
     # Sends a new tweet and checks for new followers, sleeps.
     while conn:
-        log.info("Start of connection loop.")
+        log.info(f"Start of connection loop.")
         check_followers(conn)
         did_tweet = iteration(conn)
         while did_tweet is False:
             did_tweet = iteration(conn)
         # else:
         log.info(f"Going to sleep for {sleep_time}")
-        print("Sleeping...")
+        print(f"Sleeping...")
         time.sleep(SLEEP_FOR)
 
 
 if __name__ == "__main__":
+    log.info(f"Calling __main__")
     #main()
 
     # Do any testing here, but first comment out main():
+    #quoteDict.import_new_sayings()
     conn = connect()
     get_best_friend(conn)

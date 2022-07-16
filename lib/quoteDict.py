@@ -1,5 +1,34 @@
-# Dictionary of Speaker values for quotes
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+
+# The file for quotes used by the main script.
+
+# Standard libraries.
+import os
+import glob
+import datetime
+import logging
+
+# Custom libraries.
+import config
+
+# Get config info
+COMMENT_CHAR = config.properties["comment_char"]
+DOUBLE_LINE_CHAR = config.properties["double_line_char"]
+IMPORT_PATH = config.properties["import_path"]
+DATE_FORMAT = config.properties["logging_date_format"]
+LOG_FORMAT = config.properties["log_format"]
+BASE_LOG_DIR = config.properties["base_log_dir"]
+BASE_LOG_EXT = config.properties["base_log_extension"]
+
+# Create variables.
+log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
+logging.basicConfig(filename=log_filename, format=LOG_FORMAT, level=logging.DEBUG, datefmt=DATE_FORMAT)
+log = logging.getLogger()
+
+# Dictionary of default Speaker values for quotes
 speaker_dict = {
+    -1: "Unknown",
     0: "Michael Scott",
     1: "Jim Halpert",
     2: "Dwight Schrute",
@@ -16,7 +45,7 @@ speaker_dict = {
     13: "Toby Flenderson"
 }
 
-# Dictionary of Quotes
+# Dictionary of default Quotes
 quote_dict = {
     "That's what she said!": {
         "source": speaker_dict[0], "used": 1},
@@ -180,7 +209,7 @@ def get_most_used_dict():
             most_used[quote]['source'] = quote_dict[quote]['source']
             most_used[quote]['used'] = quote_dict[quote]['used']
 
-    print(f"Most used Dictionary contains {len(most_used)} items.")
+    log.info(f"Most used Dictionary contains {len(most_used)} items.")
     return most_used
 
 
@@ -199,7 +228,7 @@ def get_least_used_dict():
             least_used[quote]['source'] = quote_dict[quote]['source']
             least_used[quote]['used'] = quote_dict[quote]['used']
 
-    print(f"Least used Dictionary contains {len(least_used)} items.")
+    log.info(f"Least used Dictionary contains {len(least_used)} items.")
     return least_used
 
 
@@ -211,7 +240,7 @@ def is_used(quote):
 # Sets the used value of a specific quote
 def set_used(quote, value):
     quote_dict[quote]['used'] = value
-    print(f"Setting used to {value} - \"{quote}\" : {quote_dict[quote]['used']}")
+    log.info(f"Setting used to {value} for quote \"{quote}\" : {quote_dict[quote]['used']}")
 
 
 # Increases the used value of a quote by 1.
@@ -221,7 +250,7 @@ def increase_used_by_one(quote):
 
 
 # Sets all quotes used values back to 0.
-def mark_all_quote_dict_as_unused():
+def mark_all_quotes_as_unused():
     for quote in quote_dict:
         set_used(quote, 0)
 
@@ -231,3 +260,19 @@ def check_dictionary():
     for quote in quote_dict:
         if quote_dict[quote]['used'] < 0 or not isinstance(quote_dict[quote]['used'], int) or quote_dict[quote]['used'] is None:
             set_used(quote, 0)
+
+
+# Import quotes from a txt file into the default office quote dict.
+def import_new_sayings():
+    new_quote_dict = dict()
+    for filename in glob.glob(os.path.join(config.get_python_import_path(), '*.txt')):
+        print(f"Opening '{filename}.'")
+        log.info(f"Opening '{filename}.'")
+        with open(filename, 'r') as f:
+            for line in f.readlines():
+                if line[0] != COMMENT_CHAR and len(line) > 0:
+                    new_quote_dict[line] = {}
+                    new_quote_dict[line]['source'] = -1
+                    new_quote_dict[line]['used'] = 0
+    quote_dict.update(new_quote_dict)
+

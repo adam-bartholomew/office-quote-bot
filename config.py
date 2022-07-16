@@ -10,6 +10,7 @@ properties = {"consumer_key": "",
               "base_log_dir": "./logs/",
               "base_log_extension": ".log",
               "use_connection": False,
+              "import_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/new_imports/",
               }
 
 
@@ -28,3 +29,12 @@ def get_use_connection():
         else:
             use_conn = False
     return use_conn
+
+
+# Returns the import path in proper format.
+def get_python_import_path():
+    import_path = properties["import_path"]
+    if import_path is not None and isinstance(import_path, str):
+        import_path = import_path.replace("\\", "/")
+    return import_path
+
