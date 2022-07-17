@@ -20,6 +20,9 @@ DATE_FORMAT = config.properties["logging_date_format"]
 LOG_FORMAT = config.properties["log_format"]
 BASE_LOG_DIR = config.properties["base_log_dir"]
 BASE_LOG_EXT = config.properties["base_log_extension"]
+ARCHIVE_PATH = config.properties["archive_path"]
+ARCHIVE_FILE_PREFIX = config.properties["archive_file_prefix"]
+BASE_EXPORT_EXT = config.properties["base_export_extension"]
 
 # Create variables.
 log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
@@ -177,7 +180,7 @@ quote_dict = {
     "Why are all these people here? There are too many people on this earth. We need a new plague.": {
         "source": speaker_dict[2], "used": 1},
     "You couldn't handle my undivided attention.": {
-        "source": speaker_dict[2], "used": 1},
+        "source": speaker_dict[2], "used": -1},
 
     "Lord, beer me strength.": {
         "source": speaker_dict[1], "used": 1},
@@ -239,12 +242,13 @@ def is_used(quote):
 
 # Sets the used value of a specific quote
 def set_used(quote, value):
+    log.info(f"Setting used to {value} for quote \"{quote}\"")
     quote_dict[quote]['used'] = value
-    log.info(f"Setting used to {value} for quote \"{quote}\" : {quote_dict[quote]['used']}")
 
 
 # Increases the used value of a quote by 1.
 def increase_used_by_one(quote):
+    log.info(f"Increasing 'used' by 1 for: \"{quote}\"")
     value = quote_dict[quote]['used']
     set_used(quote, value + 1)
 
@@ -257,6 +261,7 @@ def mark_all_quotes_as_unused():
 
 # Sets any "bad" used values to 0 - negative or non int types.
 def check_dictionary():
+    log.info(f"Checking each quote's 'used' values to be valid.")
     for quote in quote_dict:
         if quote_dict[quote]['used'] < 0 or not isinstance(quote_dict[quote]['used'], int) or quote_dict[quote]['used'] is None:
             set_used(quote, 0)
@@ -264,15 +269,47 @@ def check_dictionary():
 
 # Import quotes from a txt file into the default office quote dict.
 def import_new_sayings():
+    print(f"Importing new sayings from file(s).")
+    log.info(f"Importing new sayings from file(s).")
     new_quote_dict = dict()
     for filename in glob.glob(os.path.join(config.get_python_import_path(), '*.txt')):
-        print(f"Opening '{filename}.'")
         log.info(f"Opening '{filename}.'")
         with open(filename, 'r') as f:
             for line in f.readlines():
                 if line[0] != COMMENT_CHAR and len(line) > 0:
-                    new_quote_dict[line] = {}
-                    new_quote_dict[line]['source'] = -1
-                    new_quote_dict[line]['used'] = 0
+                    line_data = line.split(':{')
+
+                    if len(line_data) > 1:
+                        source = int(line_data[1].split(', ')[0].split(': ')[1].replace('}', ''))
+                        used = int(line_data[1].split(', ')[1].split(': ')[1].replace('}', ''))
+                    else:
+                        source = -1
+                        used = 0
+
+                    new_quote_dict[line_data[0]] = {}
+                    new_quote_dict[line_data[0]]['source'] = speaker_dict[source]
+                    new_quote_dict[line_data[0]]['used'] = used
     quote_dict.update(new_quote_dict)
+
+
+# Export the current dict of sayings to a file
+def export_current_dicts():
+    print(f"Exporting current working dicts.")
+    log.info(f"Starting export.")
+    quotes_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
+    speakers_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}speaker_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
+    log.info(f"Exporting current working dicts to:\n{quotes_export_filename}\n{speakers_export_filename}")
+
+    check_dictionary()
+
+    with open(quotes_export_filename, "w") as f:
+        for key, value in quote_dict.items():
+            f.write('%s:%s\n' % (key, value))
+
+    with open(speakers_export_filename, "w") as f:
+        for key, value in speaker_dict.items():
+            f.write('%s:%s\n' % (key, value))
+
+    log.info(f"Export complete.")
+
 

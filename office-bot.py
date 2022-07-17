@@ -26,8 +26,6 @@ LOG_FORMAT = config.properties["log_format"]
 BASE_LOG_DIR = config.properties["base_log_dir"]
 BASE_LOG_EXT = config.properties["base_log_extension"]
 USE_CONN = config.get_use_connection()
-IMPORT_PATH = config.properties["import_path"]
-
 
 # Create variables.
 log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
@@ -132,7 +130,7 @@ def get_best_friend(conn):
             if int(dm.message_create['sender_id']) in followers:
                 followers[int(dm.message_create['sender_id'])]['num_dms'] += 1
 
-        # todo: Continue this function here - grab retweets/likes
+        # If possible continue this function here - grab retweets/likes
     else:
         log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
 
@@ -170,6 +168,7 @@ if __name__ == "__main__":
     #main()
 
     # Do any testing here, but first comment out main():
-    #quoteDict.import_new_sayings()
-    conn = connect()
-    get_best_friend(conn)
+    quoteDict.import_new_sayings()
+    quoteDict.export_current_dicts()
+    #conn = connect()
+    #get_best_friend(conn)

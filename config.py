@@ -11,6 +11,9 @@ properties = {"consumer_key": "",
               "base_log_extension": ".log",
               "use_connection": False,
               "import_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/new_imports/",
+              "archive_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/archive/",
+              "archive_file_prefix": "dict_archive_",
+              "base_export_extension": ".txt",
               }
 
 
