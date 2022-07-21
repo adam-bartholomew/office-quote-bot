@@ -168,7 +168,8 @@ if __name__ == "__main__":
     #main()
 
     # Do any testing here, but first comment out main():
-    quoteDict.import_new_sayings()
-    quoteDict.export_current_dicts()
+    quoteDict.add_new_speaker("michael scott")
+    quoteDict.import_new_sayings_dict()
+    #quoteDict.export_current_dicts()
     #conn = connect()
     #get_best_friend(conn)

@@ -268,37 +268,46 @@ def check_dictionary():
 
 
 # Import quotes from a txt file into the default office quote dict.
-def import_new_sayings():
-    print(f"Importing new sayings from file(s).")
-    log.info(f"Importing new sayings from file(s).")
+def import_new_sayings_dict():
+    print(f"Importing new quotes from file.")
+    log.info(f"Importing new quotes from file.")
     new_quote_dict = dict()
     for filename in glob.glob(os.path.join(config.get_python_import_path(), '*.txt')):
         log.info(f"Opening '{filename}.'")
         with open(filename, 'r') as f:
             for line in f.readlines():
-                if line[0] != COMMENT_CHAR and len(line) > 0:
-                    line_data = line.split(':{')
+                if line[0] == COMMENT_CHAR or len(line) < 1:
+                    break
 
-                    if len(line_data) > 1:
-                        source = int(line_data[1].split(', ')[0].split(': ')[1].replace('}', ''))
-                        used = int(line_data[1].split(', ')[1].split(': ')[1].replace('}', ''))
-                    else:
-                        source = -1
+                line_data = line.split(':{')
+
+                if len(line_data) > 1:
+                    source = line_data[1].split(', ')[0].split(': ')[1].replace('}', '').strip('"').strip("'").title()
+                    try:
+                        int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
+                        used = int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
+                    except ValueError:
+                        log.info(f"Used value is not an integer, setting to 0")
                         used = 0
+                else:
+                    source = 'Unknown'
+                    used = 0
 
-                    new_quote_dict[line_data[0]] = {}
-                    new_quote_dict[line_data[0]]['source'] = speaker_dict[source]
-                    new_quote_dict[line_data[0]]['used'] = used
+                new_quote_dict[line_data[0]] = {}
+                new_quote_dict[line_data[0]]['source'] = source
+                new_quote_dict[line_data[0]]['used'] = used
+                add_new_speaker(source)
+                log.info(f"New quote added to dict - '{line_data[0]}': {new_quote_dict[line_data[0]]}")
     quote_dict.update(new_quote_dict)
 
 
 # Export the current dict of sayings to a file
 def export_current_dicts():
     print(f"Exporting current working dicts.")
-    log.info(f"Starting export.")
+    log.info(f"Exporting current working dicts.")
     quotes_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
     speakers_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}speaker_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
-    log.info(f"Exporting current working dicts to:\n{quotes_export_filename}\n{speakers_export_filename}")
+    log.info(f"Exporting current working dicts to:\nQuote Dict: {quotes_export_filename}\nSpeaker Dict: {speakers_export_filename}")
 
     check_dictionary()
 
@@ -312,4 +321,16 @@ def export_current_dicts():
 
     log.info(f"Export complete.")
 
+
+# Add new speaker to speaker_dict
+def add_new_speaker(new_speaker):
+    new_speaker = str(new_speaker.strip('"').strip("'")).title()
+    for key, speaker in speaker_dict.items():
+        if speaker.title() == new_speaker:
+            log.info(f"Speaker already exists, not adding to dict: key={key}, name='{new_speaker}'")
+            return False
+
+    # If we get to this point the speaker is not in the dict, add them
+    speaker_dict[max(k for k, v in speaker_dict.items())+1] = new_speaker
+    log.info(f"New speaker was added: id={max(k for k, v in speaker_dict.items())}, name={new_speaker}")
 
