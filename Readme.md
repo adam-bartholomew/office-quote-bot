@@ -1,5 +1,5 @@
-# A Twitter Bot that tweets random quotes from the TV show "The Office"
-### Created by [Adam Bartholomew](https://www.linkedin.com/in/adam-bartholomew/) with [Python](https://www.python.org/) and [Tweepy](https://docs.tweepy.org/en/stable/index.html).
+## A Twitter Bot that tweets random quotes from the TV show "The Office".
+#### Created by [Adam Bartholomew](https://www.linkedin.com/in/adam-bartholomew/) using [Python](https://www.python.org/) and [Tweepy](https://docs.tweepy.org/en/stable/index.html).
 _With credit and inspiration from [Josh Richard](https://github.com/joshuarichard)_
 
 #### Notes:
@@ -15,11 +15,8 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 * How to set up a custom logger.
 * How to package a library and import it into the main program.
 * How to define dictionaries and functions to access/modify those dictionaries.
+* How to read and write to files.
 
 Further Reading and Library Documentation:
 ------------------------------------------
-1. [Python Website](https://www.python.org/)
-2. [Tweepy Library](http://www.tweepy.org/)
-3. [Twitter](https://www.twitter.com/)
-4. Adam Bartholomew's [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/)
-5. Adam bartholomew's [GitHub](https://github.com/adam-bartholomew/)
+[Python](https://www.python.org/) | [Tweepy](http://www.tweepy.org/) | [Twitter](https://www.twitter.com/) | [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/) | [GitHub](https://github.com/adam-bartholomew/)
