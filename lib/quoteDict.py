@@ -192,46 +192,35 @@ quote_dict = {
         "source": speaker_dict[1], "used": 0},
 
     "Are you on Email?": {
-        "source": speaker_dict[3], "used": 5},
+        "source": speaker_dict[3], "used": 0},
 }
 
 
 # Returns a dictionary of the most used quote(s)
 def get_most_used_dict():
-    number = 0
-    most_used = dict()
+    most_used_value = max(props['used'] for quote, props in quote_dict.items())  # Get the highest 'used' value
+    most_used = {}
     for quote in quote_dict:
-        if quote_dict[quote]['used'] > number:
-            number = quote_dict[quote]['used']
-            most_used.clear()
-            most_used[quote] = {}
-            most_used[quote]['source'] = quote_dict[quote]['source']
-            most_used[quote]['used'] = quote_dict[quote]['used']
-        elif quote_dict[quote]['used'] == number:
+        if quote_dict[quote]['used'] == most_used_value:  # Add quote to the return dict if the used value matches the most_used_value from above
             most_used[quote] = {}
             most_used[quote]['source'] = quote_dict[quote]['source']
             most_used[quote]['used'] = quote_dict[quote]['used']
 
-    log.info(f"Most used Dictionary contains {len(most_used)} items.")
+    log.info(f"There are {len(most_used)} items in the most used dictionary, each has been used {most_used_value} times.")
     return most_used
 
 
 # Returns a dictionary of the least used quote(s)
 def get_least_used_dict():
-    number = 0
-    least_used = dict()
+    least_used_value = min(props['used'] for quote, props in quote_dict.items())  # Get the lowest 'used' value
+    least_used = {}
     for quote in quote_dict:
-        if quote_dict[quote]['used'] < number:
-            least_used.clear()
-            least_used[quote] = {}
-            least_used[quote]['source'] = quote_dict[quote]['source']
-            least_used[quote]['used'] = quote_dict[quote]['used']
-        elif quote_dict[quote]['used'] == number:
+        if quote_dict[quote]['used'] == least_used_value:  # Add quote to the return dict if used value matches the least_used_value from above
             least_used[quote] = {}
             least_used[quote]['source'] = quote_dict[quote]['source']
             least_used[quote]['used'] = quote_dict[quote]['used']
 
-    log.info(f"Least used Dictionary contains {len(least_used)} items.")
+    log.info(f"There are {len(least_used)} items in the least used dictionary, each has been used {least_used_value} times.")
     return least_used
 
 
@@ -272,7 +261,7 @@ def import_new_sayings_dict():
     print(f"Importing new quotes from file.")
     log.info(f"Importing new quotes from file.")
     new_quote_dict = dict()
-    for filename in glob.glob(os.path.join(config.get_python_import_path(), '*.txt')):
+    for filename in glob.glob(os.path.join(config.get_python_import_path(), '*.txt')):  # todo: add the allowed input file types as a prop in the config file.
         log.info(f"Opening '{filename}.'")
         with open(filename, 'r') as f:
             for line in f.readlines():
@@ -333,4 +322,3 @@ def add_new_speaker(new_speaker):
     # If we get to this point the speaker is not in the dict, add them
     speaker_dict[max(k for k, v in speaker_dict.items())+1] = new_speaker
     log.info(f"New speaker was added: id={max(k for k, v in speaker_dict.items())}, name={new_speaker}")
-
