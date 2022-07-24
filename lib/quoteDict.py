@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-# The file for quotes used by the main script.
+# This file is for retrieving and storing the quotes and the relevant information used by the main script.
 
 # Standard libraries.
 import os
@@ -13,16 +13,17 @@ import logging
 import config
 
 # Get config info
-COMMENT_CHAR = config.properties["comment_char"]
-DOUBLE_LINE_CHAR = config.properties["double_line_char"]
-IMPORT_PATH = config.properties["import_path"]
-DATE_FORMAT = config.properties["logging_date_format"]
-LOG_FORMAT = config.properties["log_format"]
-BASE_LOG_DIR = config.properties["base_log_dir"]
-BASE_LOG_EXT = config.properties["base_log_extension"]
-ARCHIVE_PATH = config.properties["archive_path"]
-ARCHIVE_FILE_PREFIX = config.properties["archive_file_prefix"]
-BASE_EXPORT_EXT = config.properties["base_export_extension"]
+COMMENT_CHAR = config.get_property("comment_char")
+DOUBLE_LINE_CHAR = config.get_property("double_line_char")
+IMPORT_PATH = config.get_property("import_path")
+DATE_FORMAT = config.get_property("logging_date_format")
+LOG_FORMAT = config.get_property("log_format")
+BASE_LOG_DIR = config.get_property("base_log_dir")
+BASE_LOG_EXT = config.get_property("base_log_extension")
+ARCHIVE_PATH = config.get_property("archive_path")
+ARCHIVE_FILE_PREFIX = config.get_property("archive_file_prefix")
+BASE_EXPORT_EXT = config.get_property("base_export_extension")
+ALLOWED_IMPORT_FILETYPES = config.get_property("allowed_import_filetypes")
 
 # Create variables.
 log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
@@ -261,7 +262,7 @@ def import_new_sayings_dict():
     print(f"Importing new quotes from file.")
     log.info(f"Importing new quotes from file.")
     new_quote_dict = dict()
-    for filename in glob.glob(os.path.join(config.get_python_import_path(), '*.txt')):  # todo: add the allowed input file types as a prop in the config file.
+    for filename in glob.glob(os.path.join(config.get_python_import_path(), '*' + ALLOWED_IMPORT_FILETYPES)):  # todo: add the allowed input file types as a prop in the config file and allow different file types to be imported.
         log.info(f"Opening '{filename}.'")
         with open(filename, 'r') as f:
             for line in f.readlines():

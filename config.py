@@ -1,8 +1,17 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+
+# The file for configurable properties.
+
+# Standard libraries.
+import datetime
+import logging
+
 properties = {"consumer_key": "",
               "consumer_secret": "",
               "access_token": "",
               "access_secret": "",
-              "sleep_for": "880000",  # in seconds: 24 hours
+              "sleep_for": "880000",  # represented in seconds: 24 hours
               "comment_char": "#",
               "double_line_char": "&",
               "log_format": "[%(asctime)s] %(levelname)s:%(message)s",
@@ -10,19 +19,24 @@ properties = {"consumer_key": "",
               "base_log_dir": "./logs/",
               "base_log_extension": ".log",
               "use_connection": False,
-              "import_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/new_imports/",
+              "import_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/imports/",
               "archive_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/archive/",
               "archive_file_prefix": "dict_archive_",
               "base_export_extension": ".txt",
+              "allowed_import_filetypes": ".txt",
               }
+
+log_filename = properties.get("base_log_dir") + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + properties.get('base_log_extension')
+logging.basicConfig(filename=log_filename, format=properties.get('log_format'), level=logging.DEBUG, datefmt=properties.get('logging_date_format'))
+log = logging.getLogger()
 
 
 # Returns a boolean value for the use_connection property.
 def get_use_connection():
-    use_conn = properties["use_connection"]
+    use_conn = get_property_with_default("use_connection", False)
     if use_conn is not None and not isinstance(use_conn, bool):
         if isinstance(use_conn, str):
-            use_conn = properties["use_connection"].strip()
+            use_conn = use_conn.strip()
             if use_conn.lower() == "true" or use_conn.lower() == "t" or use_conn.lower() == "yes" or use_conn.lower() == "y":
                 use_conn = True
             else:
@@ -36,8 +50,30 @@ def get_use_connection():
 
 # Returns the import path in proper format.
 def get_python_import_path():
-    import_path = properties["import_path"]
+    import_path = get_property("import_path")
     if import_path is not None and isinstance(import_path, str):
         import_path = import_path.replace("\\", "/")
     return import_path
+
+
+# Get a property.
+def get_property(name):
+    if properties.get(name) and len(properties.get(name)) > 0:
+        log.info(f"Got property '{name}' with value '{properties.get(name)}'.")
+        return properties.get(name)
+
+    log.debug(f"Couldn't find the property '{name}'.")
+
+
+# Get a property by name with default value.
+def get_property_with_default(name, default):
+    if get_property(name):
+        return get_property(name)
+
+    if get_property(name) is None and default:
+        log.info(f"Property '{name}' not found; returned provided default value '{default}'.")
+        return default
+
+    log.debug(f"Couldn't get property '{name}' or return default value {default}... Exiting.")
+
 

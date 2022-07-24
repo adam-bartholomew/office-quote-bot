@@ -16,15 +16,15 @@ import config
 import lib.quoteDict as quoteDict
 
 # Get config info.
-CONSUMER_KEY = config.properties["consumer_key"]
-CONSUMER_SECRET = config.properties["consumer_secret"]
-ACCESS_TOKEN = config.properties["access_token"]
-ACCESS_SECRET = config.properties["access_secret"]
-SLEEP_FOR = int(config.properties["sleep_for"])
-DATE_FORMAT = config.properties["logging_date_format"]
-LOG_FORMAT = config.properties["log_format"]
-BASE_LOG_DIR = config.properties["base_log_dir"]
-BASE_LOG_EXT = config.properties["base_log_extension"]
+CONSUMER_KEY = config.get_property("consumer_key")
+CONSUMER_SECRET = config.get_property("consumer_secret")
+ACCESS_TOKEN = config.get_property("access_token")
+ACCESS_SECRET = config.get_property("access_secret")
+SLEEP_FOR = int(config.get_property("sleep_for"))
+DATE_FORMAT = config.get_property("logging_date_format")
+LOG_FORMAT = config.get_property("log_format")
+BASE_LOG_DIR = config.get_property("base_log_dir")
+BASE_LOG_EXT = config.get_property("base_log_extension")
 USE_CONN = config.get_use_connection()
 
 # Create variables.
@@ -171,5 +171,6 @@ if __name__ == "__main__":
     quoteDict.add_new_speaker("michael scott")
     quoteDict.import_new_sayings_dict()
     #quoteDict.export_current_dicts()
+
     #conn = connect()
     #get_best_friend(conn)
