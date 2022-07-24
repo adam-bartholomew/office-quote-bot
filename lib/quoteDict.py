@@ -258,37 +258,63 @@ def check_dictionary():
 
 
 # Import quotes from a txt file into the default office quote dict.
-def import_new_sayings_dict():
-    print(f"Importing new quotes from file.")
-    log.info(f"Importing new quotes from file.")
+def import_new_sayings():
+    print(f"Importing new quotes from files.")
+    log.info(f"Importing new quotes from files.")
     new_quote_dict = dict()
-    for filename in glob.glob(os.path.join(IMPORT_PATH, '*' + ALLOWED_IMPORT_FILETYPES)):  # todo: add the allowed input file types as a prop in the config file and allow different file types to be imported.
-        log.info(f"Opening '{filename}.'")
-        with open(filename, 'r') as f:
-            for line in f.readlines():
-                if line[0] == COMMENT_CHAR or len(line) < 1:
-                    break
+    for filename in glob.glob(os.path.join(IMPORT_PATH, '*')):
+        print(filename)
+        # Import quotes from a txt file into the default office quote dict
+        if filename.endswith('.txt'):
+            import_file_txt(new_quote_dict, filename)
 
-                line_data = line.split(':{')
+        # Import quotes from a csv file into the default office quote dict
+        if filename.endswith('.csv'):
+            print('csv file')
 
-                if len(line_data) > 1:
-                    source = line_data[1].split(', ')[0].split(': ')[1].replace('}', '').strip('"').strip("'").title()
-                    try:
-                        int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
-                        used = int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
-                    except ValueError:
-                        log.info(f"Used value is not an integer, setting to 0")
-                        used = 0
-                else:
-                    source = 'Unknown'
+        # Import quotes from a xml file into the default office quote dict
+        if filename.endswith('.xml'):
+            print('xml file')
+
+        # Import quotes from a json file into the default office quote dict
+        if filename.endswith('.json'):
+            print('json file')
+
+
+# Import quotes from a .txt file.
+# @param - dictionary: The dictionary we should add data to.
+# @param - filename: the full file path and name that we will read data in from.
+def import_file_txt(dictionary, filename):
+    log.info(f"Opening '{filename}.'")
+    with open(filename, 'r') as f:
+        for line in f.readlines():
+            if line[0] == COMMENT_CHAR or len(line) < 1:
+                break
+
+            line_data = line.split(':{')
+
+            if len(line_data) > 1:
+                source = line_data[1].split(', ')[0].split(': ')[1].replace('}', '').strip('"').strip("'").title()
+                try:
+                    int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
+                    used = int(
+                        line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
+                except ValueError:
+                    log.info(f"Used value is not an integer, setting to 0")
                     used = 0
+            else:
+                source = 'Unknown'
+                used = 0
 
-                new_quote_dict[line_data[0]] = {}
-                new_quote_dict[line_data[0]]['source'] = source
-                new_quote_dict[line_data[0]]['used'] = used
-                add_new_speaker(source)
-                log.info(f"New quote added to dict - '{line_data[0]}': {new_quote_dict[line_data[0]]}")
-    quote_dict.update(new_quote_dict)
+            dictionary[line_data[0]] = {}
+            dictionary[line_data[0]]['source'] = source
+            dictionary[line_data[0]]['used'] = used
+            add_new_speaker(source)
+            log.info(f"New quote added to dict - '{line_data[0]}': {dictionary[line_data[0]]}")
+
+    # Finally, add all new quotes to the existing dictionary.
+    quote_dict.update(dictionary)
+
 
 
 # Export the current dict of sayings to a file

@@ -17,6 +17,43 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 * How to define dictionaries and functions to access/modify those dictionaries.
 * How to read and write to files.
 
+### How to import quotes:
+#### .txt:
+    1. All information about a quote in a ".txt" file should be on one line.
+    2. The quote itself should not be surrounded by anything: quotation marks, brackets, parenthesis, etc.
+    3. Any extra properties for the quote, i.e. speaker or used count, should be placed after the quote and within curly braces with a colon before the opening curly brace. 
+        ":{"
+    4. The extra property name should be enconclosed in single quotes followed by a colon and the value for that property.
+    5. A line beginnning with the character defined in the comment_char property will be ignored and not be imported.
+    6. If no extra properties are provided then default values will be used.
+
+    The following example will add the quote "Et tu Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
+        Et tu Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
+
+    The following config properties are used in importing a file:
+        - import_path              | The path where import files should be placed.
+        - allowed_import_filetypes | The file types allowed to be imported.
+        - comment_char             | This character will be used to exclude lines during an import.
+
+#### .xml
+
+#### .csv
+
+#### .json
+
+### How to export quotes:
+    1. The quote and speaker dictionaries are exported as a flat .txt file.
+    2. They come from the python dictionary that they are stored in while the program is running.
+
+    The exported quotes will look like the example below:
+        That's what she said!:{'source': 'Michael Scott', 'used': 1}
+
+    The following config properties are used in the export process:
+        - archive_path          | The location where the data will be exported.
+        - archive_file_prefix   | The beginning of the export file name, something generic.
+        - base_export_extension | The file type of the exported files.
+    
+
 Further Reading and Library Documentation:
 ------------------------------------------
 [Python](https://www.python.org/) | [Tweepy](http://www.tweepy.org/) | [Twitter](https://www.twitter.com/) | [LinkedIn](https://www.linkedin.com/in/adam-bartholomew/) | [GitHub](https://github.com/adam-bartholomew/)
