@@ -262,7 +262,7 @@ def import_new_sayings_dict():
     print(f"Importing new quotes from file.")
     log.info(f"Importing new quotes from file.")
     new_quote_dict = dict()
-    for filename in glob.glob(os.path.join(config.get_python_import_path(), '*' + ALLOWED_IMPORT_FILETYPES)):  # todo: add the allowed input file types as a prop in the config file and allow different file types to be imported.
+    for filename in glob.glob(os.path.join(IMPORT_PATH, '*' + ALLOWED_IMPORT_FILETYPES)):  # todo: add the allowed input file types as a prop in the config file and allow different file types to be imported.
         log.info(f"Opening '{filename}.'")
         with open(filename, 'r') as f:
             for line in f.readlines():
