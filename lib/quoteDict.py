@@ -250,11 +250,15 @@ def mark_all_quotes_as_unused():
 
 
 # Sets any "bad" used values to 0 - negative or non int types.
+# Sets and "bad" source values to Unknown - empty or non str types.
 def check_dictionary():
-    log.info(f"Checking each quote's 'used' values to be valid.")
+    log.info(f"Checking each quote's 'used' and 'source' values to be valid.")
     for quote in quote_dict:
         if quote_dict[quote]['used'] < 0 or not isinstance(quote_dict[quote]['used'], int) or quote_dict[quote]['used'] is None:
             set_used(quote, 0)
+        if not isinstance(quote_dict[quote]['source'], str) or len(quote_dict[quote]['source']) < 1:
+            print(1)
+            quote_dict[quote]['source'] = 'Unknown'
 
 
 # Import quotes from a txt file into the default office quote dict.
@@ -315,6 +319,32 @@ def import_file_txt(dictionary, filename):
     # Finally, add all new quotes to the existing dictionary.
     quote_dict.update(dictionary)
 
+
+# Import quotes from a .csv file.
+# @param - dictionary: The dictionary we should add data to.
+# @param - filename: the full file path and name that we will read data in from.
+def import_file_csv(dictionary, filename):
+    log.info(f"Opening '{filename}.'")
+    with open(filename, 'r') as f:
+        print('csv')
+
+
+# Import quotes from a .json file.
+# @param - dictionary: The dictionary we should add data to.
+# @param - filename: the full file path and name that we will read data in from.
+def import_file_json(dictionary, filename):
+    log.info(f"Opening '{filename}.'")
+    with open(filename, 'r') as f:
+        print('json')
+
+
+# Import quotes from a .xml file.
+# @param - dictionary: The dictionary we should add data to.
+# @param - filename: the full file path and name that we will read data in from.
+def import_file_xml(dictionary, filename):
+    log.info(f"Opening '{filename}.'")
+    with open(filename, 'r') as f:
+        print('xml')
 
 
 # Export the current dict of sayings to a file
