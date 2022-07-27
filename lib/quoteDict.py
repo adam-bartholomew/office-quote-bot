@@ -8,6 +8,9 @@ import os
 import glob
 import datetime
 import logging
+import json
+import csv
+import xml.etree.ElementTree as ET
 
 # Custom libraries.
 import config
@@ -344,7 +347,47 @@ def import_file_json(dictionary, filename):
 def import_file_xml(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
-        print('xml')
+        tree = ET.parse(f)
+        root = tree.getroot()
+
+        # Loop through each <quote> tag.
+        for item in root.findall('./quote'):
+            quote, source, used = None, None, None
+
+            # Get each child element of <quote>
+            for child in item:
+                if child.tag == 'text' or child.tag == 'saying':
+                    quote = child.text
+                if child.tag == 'source':
+                    source = child.text
+                if child.tag == 'used':
+                    used = child.text
+
+            # Make sure the values provided are valid, if not replace with default starting values.
+            if quote is None or len(quote) < 1 or quote[0] == COMMENT_CHAR:
+                break
+            if source is None or len(source) < 1:
+                source = "Unknown"
+            if used is not None:
+                try:
+                    int(used)
+                    used = int(used)
+                except ValueError:
+                    log.info(f"Used value is not an integer, setting to 0")
+                    used = 0
+            else:
+                log.info(f"Used value is not an integer, setting to 0")
+                used = 0
+
+            # add the new quote to the working dictionary
+            dictionary[quote] = {}
+            dictionary[quote]['source'] = source
+            dictionary[quote]['used'] = used
+            add_new_speaker(source)
+            log.info(f"New quote added to dict - '{quote}': {dictionary[quote]}")
+
+        # Finally, add all new quotes to the existing dictionary.
+        quote_dict.update(dictionary)
 
 
 # Export the current dict of sayings to a file
