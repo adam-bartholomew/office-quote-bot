@@ -10,7 +10,7 @@ import datetime
 import logging
 import json
 import csv
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as elementTree
 
 # Custom libraries.
 import config
@@ -252,16 +252,66 @@ def mark_all_quotes_as_unused():
         set_used(quote, 0)
 
 
-# Sets any "bad" used values to 0 - negative or non int types.
-# Sets and "bad" source values to Unknown - empty or non str types.
+# Checks to see if the quote is valid - not empty, null, and does not begin with the comment character.
+def is_valid_quote(quote):
+    log.info(f"Checking the quote value provided: {quote}.")
+    if quote is None or len(quote) < 1 or quote[0] == COMMENT_CHAR:
+        return False
+
+    return True
+
+
+# Checks to see if the used value is valid - not negative and an integer.
+def is_valid_used(used):
+    log.info(f"Checking the used value provided: {used}.")
+
+    try:
+        int(used)
+        used = int(used)
+        if not isinstance(used, int) or used < 0 or used is None:
+            return False
+    except ValueError:
+        return False
+    except TypeError:
+        return False
+    else:
+        return True
+
+
+# Checks to see if the source value is valid - not empty and a string.
+def is_valid_source(source):
+    log.info(f"Checking the source value provided: {source}.")
+
+    if not isinstance(source, str) or len(source) < 1 or source is None:
+        return False
+
+    try:
+        str(source)
+    except ValueError:
+        return False
+    except TypeError:
+        return False
+    else:
+        return True
+
+
+# Checks the entire dictionary and resets any bad data.
 def check_dictionary():
     log.info(f"Checking each quote's 'used' and 'source' values to be valid.")
     for quote in quote_dict:
         if quote_dict[quote]['used'] < 0 or not isinstance(quote_dict[quote]['used'], int) or quote_dict[quote]['used'] is None:
             set_used(quote, 0)
         if not isinstance(quote_dict[quote]['source'], str) or len(quote_dict[quote]['source']) < 1:
-            print(1)
-            quote_dict[quote]['source'] = 'Unknown'
+            quote_dict[quote]['source'] = "Unknown"
+
+
+# Add a new quote to the quote_dict.
+def add_new_quote(dictionary, quote, source, used):
+    dictionary[quote] = {}
+    dictionary[quote]['source'] = source
+    dictionary[quote]['used'] = used
+    add_new_speaker(source)
+    log.info(f"New quote added to dict - '{quote}': {dictionary[quote]}")
 
 
 # Import quotes from a txt file into the default office quote dict.
@@ -277,15 +327,15 @@ def import_new_sayings():
 
         # Import quotes from a csv file into the default office quote dict
         if filename.endswith('.csv'):
-            print('csv file')
+            print("csv file")
 
         # Import quotes from a xml file into the default office quote dict
         if filename.endswith('.xml'):
-            print('xml file')
+            import_file_xml(new_quote_dict, filename)
 
         # Import quotes from a json file into the default office quote dict
         if filename.endswith('.json'):
-            print('json file')
+            print("json file")
 
 
 # Import quotes from a .txt file.
@@ -295,7 +345,7 @@ def import_file_txt(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
         for line in f.readlines():
-            if line[0] == COMMENT_CHAR or len(line) < 1:
+            if not is_valid_quote(line):
                 break
 
             line_data = line.split(':{')
@@ -310,14 +360,11 @@ def import_file_txt(dictionary, filename):
                     log.info(f"Used value is not an integer, setting to 0")
                     used = 0
             else:
-                source = 'Unknown'
+                source = "Unknown"
                 used = 0
 
-            dictionary[line_data[0]] = {}
-            dictionary[line_data[0]]['source'] = source
-            dictionary[line_data[0]]['used'] = used
-            add_new_speaker(source)
-            log.info(f"New quote added to dict - '{line_data[0]}': {dictionary[line_data[0]]}")
+            # Add the new quote to the working dictionary.
+            add_new_quote(dictionary, line_data[0], source, used)
 
     # Finally, add all new quotes to the existing dictionary.
     quote_dict.update(dictionary)
@@ -329,7 +376,7 @@ def import_file_txt(dictionary, filename):
 def import_file_csv(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
-        print('csv')
+        print("csv")
 
 
 # Import quotes from a .json file.
@@ -338,7 +385,20 @@ def import_file_csv(dictionary, filename):
 def import_file_json(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
-        print('json')
+        print("json")
+
+
+# Get the child XML elements of the provided XML item.
+def get_quote_xml_properties(item):
+    quote, source, used = None, None, None
+    for child in item:
+        if child.tag == 'text' or child.tag == 'saying':
+            quote = child.text
+        if child.tag == 'source':
+            source = child.text
+        if child.tag == 'used':
+            used = child.text
+    return quote, source, used
 
 
 # Import quotes from a .xml file.
@@ -347,44 +407,24 @@ def import_file_json(dictionary, filename):
 def import_file_xml(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
-        tree = ET.parse(f)
+        tree = elementTree.parse(f)
         root = tree.getroot()
 
-        # Loop through each <quote> tag.
+        # Loop through each quote element.
         for item in root.findall('./quote'):
-            quote, source, used = None, None, None
+            # Get the expected child elements.
+            quote, source, used = get_quote_xml_properties(item)
 
-            # Get each child element of <quote>
-            for child in item:
-                if child.tag == 'text' or child.tag == 'saying':
-                    quote = child.text
-                if child.tag == 'source':
-                    source = child.text
-                if child.tag == 'used':
-                    used = child.text
-
-            # Make sure the values provided are valid, if not replace with default starting values.
-            if quote is None or len(quote) < 1 or quote[0] == COMMENT_CHAR:
+            # Make sure the values provided are valid, if not replace with default values.
+            if not is_valid_quote(quote):
                 break
-            if source is None or len(source) < 1:
+            if not is_valid_source(source):
                 source = "Unknown"
-            if used is not None:
-                try:
-                    int(used)
-                    used = int(used)
-                except ValueError:
-                    log.info(f"Used value is not an integer, setting to 0")
-                    used = 0
-            else:
-                log.info(f"Used value is not an integer, setting to 0")
+            if not is_valid_used(used):
                 used = 0
 
-            # add the new quote to the working dictionary
-            dictionary[quote] = {}
-            dictionary[quote]['source'] = source
-            dictionary[quote]['used'] = used
-            add_new_speaker(source)
-            log.info(f"New quote added to dict - '{quote}': {dictionary[quote]}")
+            # Add the new quote to the working dictionary.
+            add_new_quote(dictionary, quote, source, used)
 
         # Finally, add all new quotes to the existing dictionary.
         quote_dict.update(dictionary)
