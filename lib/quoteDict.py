@@ -259,7 +259,7 @@ def mark_all_quotes_as_unused():
 # Checks to see if the quote is valid - not empty, null, and does not begin with the comment character.
 # @param - quote: The quote value to check.
 def is_valid_quote(quote):
-    log.info(f"Checking the quote value provided: {quote}.")
+    log.info(f"Checking the quote value provided: {quote}")
     if quote is None or len(quote) < 1 or quote[0] == COMMENT_CHAR:
         return False
 
@@ -269,7 +269,7 @@ def is_valid_quote(quote):
 # Checks to see if the used value is valid - not negative and an integer.
 # @param - used: The used value to check.
 def is_valid_used(used):
-    log.info(f"Checking the used value provided: {used}.")
+    log.info(f"Checking the used value provided: {used}")
 
     try:
         int(used)
@@ -287,7 +287,7 @@ def is_valid_used(used):
 # Checks to see if the source value is valid - not empty and a string.
 # @param - source: The source value to check.
 def is_valid_source(source):
-    log.info(f"Checking the source value provided: {source}.")
+    log.info(f"Checking the source value provided: {source}")
 
     if not isinstance(source, str) or len(source) < 1 or source is None:
         return False
@@ -322,13 +322,13 @@ def add_new_quote(dictionary, quote, source, used):
     dictionary[quote]['source'] = source
     dictionary[quote]['used'] = used
     add_new_speaker(source)
-    log.info(f"New quote added to dict - '{quote}': {dictionary[quote]}")
+    log.info(f"New quote added to dict - \"{quote}\": {dictionary[quote]}")
 
 
-# Import quotes from a txt file into the default office quote dict.
+# Import new quotes from files into the default office quote dict.
 def import_new_sayings():
-    print(f"Importing new quotes from files.")
-    log.info(f"Importing new quotes from files.")
+    print(f"Importing new quotes from files")
+    log.info(f"Importing new quotes from files")
     new_quote_dict = dict()
     for filename in glob.glob(os.path.join(IMPORT_PATH, '*')):
         print(filename)
@@ -353,7 +353,7 @@ def import_new_sayings():
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_txt(dictionary, filename):
-    log.info(f"Opening '{filename}.'")
+    log.info(f"Opening '{filename}'")
     with open(filename, 'r') as f:
         for line in f.readlines():
             if not is_valid_quote(line):
@@ -385,7 +385,7 @@ def import_file_txt(dictionary, filename):
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_csv(dictionary, filename):
-    log.info(f"Opening '{filename}.'")
+    log.info(f"Opening '{filename}'")
     with open(filename, 'r') as f:
         print("csv")
 
@@ -417,7 +417,7 @@ def get_quote_xml_properties(item):
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_xml(dictionary, filename):
-    log.info(f"Opening '{filename}.'")
+    log.info(f"Opening '{filename}'")
     with open(filename, 'r') as f:
         tree = elementTree.parse(f)
         root = tree.getroot()
@@ -444,8 +444,8 @@ def import_file_xml(dictionary, filename):
 
 # Export the current dict of sayings to a file
 def export_current_dicts():
-    print(f"Exporting current working dicts.")
-    log.info(f"Exporting current working dicts.")
+    print(f"Exporting current working dicts")
+    log.info(f"Exporting current working dicts")
     quotes_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
     speakers_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}speaker_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
     log.info(f"Exporting current working dicts to:\nQuote Dict: {quotes_export_filename}\nSpeaker Dict: {speakers_export_filename}")
@@ -460,7 +460,7 @@ def export_current_dicts():
         for key, value in speaker_dict.items():
             f.write('%s:%s\n' % (key, value))
 
-    log.info(f"Export complete.")
+    log.info(f"Export complete")
 
 
 # Add new speaker to speaker_dict

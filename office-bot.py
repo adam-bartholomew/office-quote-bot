@@ -37,7 +37,7 @@ used_quotes = {}
 
 # Setup connection with Twitter.
 def connect():
-    log.info(f"Attempting to connect to Twitter.")
+    log.info(f"Attempting to connect to Twitter")
     auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
     return tweepy.API(auth)
 
@@ -91,16 +91,16 @@ def check_followers(conn):
                 except tweepy.TweepyException as err:
                     log.info(f"An unknown exception occurred while trying to follow '{follower.screen_name}': {err}")
                 else:
-                    log.info(f"ALERT: Now following {follower.screen_name}!")
+                    log.info(f"ALERT - Now following: {follower.screen_name}")
         log.info(f"All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
     else:
-        log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
+        log.info(f"USE_CONN is {USE_CONN}, not doing anything")
 
 
 # Manages the process of sending a tweet.
 # @param - conn: The tweepy api connection.
 def iteration(conn):
-    log.info(f"Start of a new iteration.")
+    log.info(f"Start of a new iteration")
     quote, tweet = get_quote()
     if send_tweet(quote, tweet, conn):
         return True
@@ -113,7 +113,7 @@ def iteration(conn):
 # Gets the "Best Friend", the user with whom we interacted with the most
 # @param - conn: The tweepy api connection.
 def get_best_friend(conn):
-    log.info(f"Getting {conn.verify_credentials().screen_name}'s best friend.")
+    log.info(f"Getting {conn.verify_credentials().screen_name}'s best friend")
     followers = dict()
     followers[conn.verify_credentials().id] = {}
     followers[conn.verify_credentials().id]['screen_name'] = conn.verify_credentials().screen_name
@@ -125,7 +125,7 @@ def get_best_friend(conn):
             followers[follower.id]['screen_name'] = follower.screen_name
             followers[follower.id]['num_dms'] = 0
 
-        log.info(f"Grabbing direct messages.")
+        log.info(f"Grabbing direct messages")
         for dm in conn.get_direct_messages():
             print(dm)
             if int(dm.message_create['sender_id']) in followers:
@@ -133,7 +133,7 @@ def get_best_friend(conn):
 
         # If possible continue this function here - grab retweets/likes
     else:
-        log.info(f"USE_CONN is {USE_CONN}, not doing anything.")
+        log.info(f"USE_CONN is {USE_CONN}, not doing anything")
 
     print(followers)
 
