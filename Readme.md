@@ -18,7 +18,13 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 * How to read and write to files.
 
 ### How to import quotes:
-#### .txt:
+#### General Information
+    The following config properties are used when importing a quote file:
+        - import_path              | The path where import files should be placed.
+        - allowed_import_filetypes | The file types allowed to be imported.
+        - comment_char             | This character will be used to exclude lines during an import (txt only).
+
+#### TXT
     1. All information about a quote in a ".txt" file should be on one line.
     2. The quote itself should not be surrounded by anything: quotation marks, brackets, parenthesis, etc.
     3. Any extra properties for the quote, i.e. speaker or used count, should be placed after the quote and within curly braces with a colon before the opening curly brace. 
@@ -30,16 +36,25 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
     The following example will add the quote "Et tu Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
         Et tu Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
 
-    The following config properties are used in importing a file:
-        - import_path              | The path where import files should be placed.
-        - allowed_import_filetypes | The file types allowed to be imported.
-        - comment_char             | This character will be used to exclude lines during an import.
+#### XML
+    1. The xml tag of quote is required.
+    2. The quote itself needs to be within <text> tags for each quote.
+    3. Any properties of the quote should also be in nested tags with the quote, e.g. <source>, <used>
+    4. The root tag's name doesn't matter, but a root tag is needed, e.g. <dictionary>
 
-#### .xml
+    The following is an example of valid import XML structure:
+    <dictionary>
+        <quote>
+            <text>Et tu Brute.</text>
+            <source>Gaius Julius Caesar</source>
+            <used>1</used>
+        </quote>
+        ...
+    </dictionary>
 
-#### .csv
+#### CSV
 
-#### .json
+#### JSON
 
 ### How to export quotes:
     1. The quote and speaker dictionaries are exported as a flat .txt file.
