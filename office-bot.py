@@ -43,8 +43,9 @@ def connect():
 
 
 # Sends a tweet given the line and connection to the api.
-#   quote - what the tweet will be.
-#   conn  - tweepy api connection.
+# @param - quote: The quote being used.
+# @param - tweet: The actual tweet being delivered.
+# @param - conn: The tweepy api connection.
 def send_tweet(quote, tweet, conn):
     if tweet and isinstance(tweet, str):
         try:
@@ -78,7 +79,7 @@ def get_quote():
 
 
 # Follows someone back if they follow this account.
-#   conn  - tweepy api connection.
+# @param - conn: The tweepy api connection.
 def check_followers(conn):
     log.info(f"Checking {conn.verify_credentials().screen_name}'s followers")
 
@@ -97,7 +98,7 @@ def check_followers(conn):
 
 
 # Manages the process of sending a tweet.
-#   conn  - tweepy api connection.
+# @param - conn: The tweepy api connection.
 def iteration(conn):
     log.info(f"Start of a new iteration.")
     quote, tweet = get_quote()
@@ -110,7 +111,7 @@ def iteration(conn):
 
 
 # Gets the "Best Friend", the user with whom we interacted with the most
-#   conn  - tweepy api connection.
+# @param - conn: The tweepy api connection.
 def get_best_friend(conn):
     log.info(f"Getting {conn.verify_credentials().screen_name}'s best friend.")
     followers = dict()

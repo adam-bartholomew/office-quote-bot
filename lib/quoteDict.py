@@ -228,18 +228,22 @@ def get_least_used_dict():
     return least_used
 
 
-# Checks to see if a given quote has been used at least once
+# Checks to see if a given quote has been used at least once.
+# @param - quote: The quote we are going to check.
 def is_used(quote):
     return bool(quote_dict[quote]['used'] > 0)
 
 
-# Sets the used value of a specific quote
+# Sets the used value of a specific quote.
+# @param - quote: The quote we are going to update.
+# @param - value: The new value for the used property.
 def set_used(quote, value):
     log.info(f"Setting used to {value} for quote \"{quote}\"")
     quote_dict[quote]['used'] = value
 
 
 # Increases the used value of a quote by 1.
+# @param - quote: The quote object to increase.
 def increase_used_by_one(quote):
     log.info(f"Increasing 'used' by 1 for: \"{quote}\"")
     value = quote_dict[quote]['used']
@@ -253,6 +257,7 @@ def mark_all_quotes_as_unused():
 
 
 # Checks to see if the quote is valid - not empty, null, and does not begin with the comment character.
+# @param - quote: The quote value to check.
 def is_valid_quote(quote):
     log.info(f"Checking the quote value provided: {quote}.")
     if quote is None or len(quote) < 1 or quote[0] == COMMENT_CHAR:
@@ -262,6 +267,7 @@ def is_valid_quote(quote):
 
 
 # Checks to see if the used value is valid - not negative and an integer.
+# @param - used: The used value to check.
 def is_valid_used(used):
     log.info(f"Checking the used value provided: {used}.")
 
@@ -279,6 +285,7 @@ def is_valid_used(used):
 
 
 # Checks to see if the source value is valid - not empty and a string.
+# @param - source: The source value to check.
 def is_valid_source(source):
     log.info(f"Checking the source value provided: {source}.")
 
@@ -306,6 +313,10 @@ def check_dictionary():
 
 
 # Add a new quote to the quote_dict.
+# @param - dictionary: The dictionary object to add quotes to.
+# @param - quote: The new quote to be added.
+# @param - source: The quote speaker.
+# @param - used: The number of times the quote has been used.
 def add_new_quote(dictionary, quote, source, used):
     dictionary[quote] = {}
     dictionary[quote]['source'] = source
@@ -340,7 +351,7 @@ def import_new_sayings():
 
 # Import quotes from a .txt file.
 # @param - dictionary: The dictionary we should add data to.
-# @param - filename: the full file path and name that we will read data in from.
+# @param - filename: The full file path and name that we will read data in from.
 def import_file_txt(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
@@ -372,7 +383,7 @@ def import_file_txt(dictionary, filename):
 
 # Import quotes from a .csv file.
 # @param - dictionary: The dictionary we should add data to.
-# @param - filename: the full file path and name that we will read data in from.
+# @param - filename: The full file path and name that we will read data in from.
 def import_file_csv(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
@@ -381,7 +392,7 @@ def import_file_csv(dictionary, filename):
 
 # Import quotes from a .json file.
 # @param - dictionary: The dictionary we should add data to.
-# @param - filename: the full file path and name that we will read data in from.
+# @param - filename: The full file path and name that we will read data in from.
 def import_file_json(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
@@ -389,21 +400,22 @@ def import_file_json(dictionary, filename):
 
 
 # Get the child XML elements of the provided XML item.
+# @param - item: The quote tag from the XML file.
 def get_quote_xml_properties(item):
-    quote, source, used = None, None, None
+    quote_text, source, used = None, None, None
     for child in item:
         if child.tag == 'text' or child.tag == 'saying':
-            quote = child.text
+            quote_text = child.text
         if child.tag == 'source':
             source = child.text
         if child.tag == 'used':
             used = child.text
-    return quote, source, used
+    return quote_text, source, used
 
 
 # Import quotes from a .xml file.
 # @param - dictionary: The dictionary we should add data to.
-# @param - filename: the full file path and name that we will read data in from.
+# @param - filename: The full file path and name that we will read data in from.
 def import_file_xml(dictionary, filename):
     log.info(f"Opening '{filename}.'")
     with open(filename, 'r') as f:
@@ -413,10 +425,10 @@ def import_file_xml(dictionary, filename):
         # Loop through each quote element.
         for item in root.findall('./quote'):
             # Get the expected child elements.
-            quote, source, used = get_quote_xml_properties(item)
+            quote_text, source, used = get_quote_xml_properties(item)
 
             # Make sure the values provided are valid, if not replace with default values.
-            if not is_valid_quote(quote):
+            if not is_valid_quote(quote_text):
                 break
             if not is_valid_source(source):
                 source = "Unknown"
@@ -424,7 +436,7 @@ def import_file_xml(dictionary, filename):
                 used = 0
 
             # Add the new quote to the working dictionary.
-            add_new_quote(dictionary, quote, source, used)
+            add_new_quote(dictionary, quote_text, source, used)
 
         # Finally, add all new quotes to the existing dictionary.
         quote_dict.update(dictionary)
@@ -452,6 +464,7 @@ def export_current_dicts():
 
 
 # Add new speaker to speaker_dict
+# @param - speaker: The new speaker being added.
 def add_new_speaker(new_speaker):
     new_speaker = str(new_speaker.strip('"').strip("'")).title()
     for key, speaker in speaker_dict.items():

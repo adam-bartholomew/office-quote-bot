@@ -57,6 +57,7 @@ def get_python_import_path():
 
 
 # Get a property.
+# @param - name: The name of the property to get.
 def get_property(name):
     if properties.get(name) and len(properties.get(name)) > 0:
         log.info(f"Got property '{name}' with value '{properties.get(name)}'.")
@@ -66,6 +67,8 @@ def get_property(name):
 
 
 # Get a property by name with default value.
+# @param - name: The name of the property to get.
+# @param - default: The default property to return if property not found/set.
 def get_property_with_default(name, default):
     if get_property(name):
         return get_property(name)
@@ -75,5 +78,3 @@ def get_property_with_default(name, default):
         return default
 
     log.debug(f"Couldn't get property '{name}' or return default value {default}... Exiting.")
-
-
