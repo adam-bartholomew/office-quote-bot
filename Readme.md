@@ -37,19 +37,19 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
         Et tu Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
 
 #### XML
-    1. The xml tag of quote is required.
-    2. The quote itself needs to be within <text> tags for each quote.
-    3. Any properties of the quote should also be in nested tags with the quote, e.g. <source>, <used>
-    4. The root tag's name doesn't matter, but a root tag is needed, e.g. <dictionary>
+    1. The xml tag <quote> is required.
+    2. The quote's text needs to be within <text> tags nested within each <quote> element.
+    3. Any extra properties for the quote should also be in nested tags within the outer <quote> element, e.g. <source>, <used>
+    4. A single root tag is needed but the name does not matter as long as it is unique and not named the same as any subtag, <dictionary> or <quotes> are good root tags.
+    5. At this time no attributes are used.
 
-    The following is an example of valid import XML structure:
+    The following valid XML example will add the quote "Et tu Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
     <dictionary>
         <quote>
             <text>Et tu Brute.</text>
             <source>Gaius Julius Caesar</source>
             <used>1</used>
         </quote>
-        ...
     </dictionary>
 
 #### CSV
