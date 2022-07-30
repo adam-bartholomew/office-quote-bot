@@ -260,7 +260,7 @@ def mark_all_quotes_as_unused():
 # @param - quote: The quote value to check.
 def is_valid_quote(quote):
     log.info(f"Checking the quote value provided: {quote}")
-    if quote is None or len(quote) < 1 or quote[0] == COMMENT_CHAR:
+    if quote is None or len(quote.strip()) < 1 or quote.strip()[0] == COMMENT_CHAR:
         return False
 
     return True
@@ -289,7 +289,7 @@ def is_valid_used(used):
 def is_valid_source(source):
     log.info(f"Checking the source value provided: {source}")
 
-    if not isinstance(source, str) or len(source) < 1 or source is None:
+    if not isinstance(source, str) or len(source.strip()) < 1 or source is None:
         return False
 
     try:
@@ -304,7 +304,7 @@ def is_valid_source(source):
 
 # Checks the entire dictionary and resets any bad data.
 def check_dictionary():
-    log.info(f"Checking each quote's 'used' and 'source' values to be valid.")
+    log.info(f"Checking each quote's 'used' and 'source' values to be valid")
     for quote in quote_dict:
         if quote_dict[quote]['used'] < 0 or not isinstance(quote_dict[quote]['used'], int) or quote_dict[quote]['used'] is None:
             set_used(quote, 0)
@@ -331,14 +331,14 @@ def import_new_sayings():
     log.info(f"Importing new quotes from files")
     new_quote_dict = dict()
     for filename in glob.glob(os.path.join(IMPORT_PATH, '*')):
-        print(filename)
+        log.info(f"Attempting to import from file \"{filename}\"")
         # Import quotes from a txt file into the default office quote dict
         if filename.endswith('.txt'):
             import_file_txt(new_quote_dict, filename)
 
         # Import quotes from a csv file into the default office quote dict
         if filename.endswith('.csv'):
-            print("csv file")
+            import_file_csv(new_quote_dict, filename)
 
         # Import quotes from a xml file into the default office quote dict
         if filename.endswith('.xml'):
@@ -353,7 +353,7 @@ def import_new_sayings():
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_txt(dictionary, filename):
-    log.info(f"Opening '{filename}'")
+    log.info(f"Opening TXT file '{filename}'")
     with open(filename, 'r') as f:
         for line in f.readlines():
             if not is_valid_quote(line):
@@ -362,7 +362,7 @@ def import_file_txt(dictionary, filename):
             line_data = line.split(':{')
 
             if len(line_data) > 1:
-                source = line_data[1].split(', ')[0].split(': ')[1].replace('}', '').strip('"').strip("'").title()
+                source = line_data[1].split(', ')[0].split(': ')[1].replace('}', '').strip('"').strip("'")
                 try:
                     int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
                     used = int(
@@ -381,20 +381,82 @@ def import_file_txt(dictionary, filename):
     quote_dict.update(dictionary)
 
 
+# Get the CSV header information.
+# @param - header_row: A single row from the top of a csv file with the header values.
+def get_csv_header_data(header_row):
+    # Get the field indices from the header.
+    index, quote_ind, source_ind, used_ind = 0, 0, 0, 0
+    for field in header_row:
+        if field == 'quote' or field == 'text':
+            quote_ind = index
+            index += 1
+        elif field == 'source' or field == 'speaker':
+            source_ind = index
+            index += 1
+        elif field == 'used':
+            used_ind = index
+            index += 1
+        else:
+            index += 1
+    log.info(f"CSV header info - quote_text index: {quote_ind}, source index: {source_ind}, used index: {used_ind}")
+    return quote_ind, source_ind, used_ind
+
+
+# Get the CSV row information.
+# @param - row: A single row of csv information.
+# @param - quote_ind: The index of the quote data in the row.
+# @param - source_ind: The index of the source data in the row.
+# @param - used_ind: The index of the used data in the row.
+def get_csv_row_data(row_data, quote_ind, source_ind, used_ind):
+    quote_text = row_data[quote_ind].strip('"').strip("'").strip()
+    source = row_data[source_ind].strip()
+    used = row_data[used_ind]
+    return quote_text, source, used
+
+
 # Import quotes from a .csv file.
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_csv(dictionary, filename):
-    log.info(f"Opening '{filename}'")
+    log.info(f"Opening CSV file '{filename}'")
+
     with open(filename, 'r') as f:
-        print("csv")
+        csv_reader = csv.reader(f)
+        header = next(csv_reader)
+
+        # Get the field indices from the header row.
+        quote_ind, source_ind, used_ind = get_csv_header_data(header)
+
+        # get quote info for each data row.
+        for row in csv_reader:
+            quote_text, source, used = get_csv_row_data(row, quote_ind, source_ind, used_ind)
+            if not is_valid_quote(quote_text):  # If the quote text is not valid skip the current row.
+                continue
+            try:
+                int(used)
+            except ValueError:
+                log.info(f"CSV - Used value is not an integer, setting to 0")
+                used = 0
+            else:
+                used = int(used)
+
+            # Make sure the values provided are valid, if not replace with default values.
+            if not is_valid_source(source):
+                source = "Unknown"
+            if not is_valid_used(used):
+                used = 0
+
+            add_new_quote(dictionary, quote_text, source, used)
+
+        # Finally, add all new quotes to the existing dictionary.
+        quote_dict.update(dictionary)
 
 
 # Import quotes from a .json file.
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_json(dictionary, filename):
-    log.info(f"Opening '{filename}.'")
+    log.info(f"Opening JSON file '{filename}.'")
     with open(filename, 'r') as f:
         print("json")
 
@@ -417,26 +479,26 @@ def get_quote_xml_properties(item):
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_xml(dictionary, filename):
-    log.info(f"Opening '{filename}'")
+    log.info(f"Opening XML file '{filename}'")
     with open(filename, 'r') as f:
         tree = elementTree.parse(f)
         root = tree.getroot()
 
         # Loop through each quote element.
         for item in root.findall('./quote'):
-            # Get the expected child elements.
+            # Get the expected child elements from the current quote tag.
             quote_text, source, used = get_quote_xml_properties(item)
 
             # Make sure the values provided are valid, if not replace with default values.
             if not is_valid_quote(quote_text):
-                break
+                continue
             if not is_valid_source(source):
                 source = "Unknown"
             if not is_valid_used(used):
                 used = 0
 
             # Add the new quote to the working dictionary.
-            add_new_quote(dictionary, quote_text, source, used)
+            add_new_quote(dictionary, quote_text.strip(), source.strip(), int(used))
 
         # Finally, add all new quotes to the existing dictionary.
         quote_dict.update(dictionary)

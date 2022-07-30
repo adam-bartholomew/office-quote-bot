@@ -14,8 +14,8 @@ properties = {"consumer_key": "",
               "sleep_for": "880000",  # represented in seconds: 24 hours
               "comment_char": "#",
               "double_line_char": "&",
-              "log_format": "[%(asctime)s] %(levelname)s:%(message)s",
-              "logging_date_format": "%m/%d/%Y %I:%M:%S %p",
+              "log_format": "%(asctime)s.%(msecs)03d |:| %(levelname)s |:| %(message)s",
+              "logging_date_format": "%m/%d/%Y %H:%M:%S",
               "base_log_dir": "./logs/",
               "base_log_extension": ".log",
               "use_connection": False,
@@ -73,7 +73,7 @@ def get_property_with_default(name, default):
     if get_property(name):
         return get_property(name)
 
-    if get_property(name) is None and default:
+    if get_property(name) is None and default is not None:
         log.info(f"Property '{name}' not found; returned provided default value '{default}'")
         return default
 

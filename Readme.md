@@ -8,17 +8,17 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 
 #### Purpose:
 * Learn and explore how to interact with an API. 
-* Maintain and Expand my knowledge of Python. 
+* Grow my knowledge of Python. 
 * Explore any creative ideas.
 
 #### Lessons Learned:
 * How to set up a custom logger.
 * How to package a library and import it into the main program.
 * How to define dictionaries and functions to access/modify those dictionaries.
-* How to read and write to files.
+* How to read and write to and from different file types.
 
-### How to import quotes:
-#### General Information
+### Importing Quotes:
+#### General Import Information
     The following config properties are used when importing a quote file:
         - import_path              | The path where import files should be placed.
         - allowed_import_filetypes | The file types allowed to be imported.
@@ -33,8 +33,8 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
     5. A line beginnning with the character defined in the comment_char property will be ignored and not be imported.
     6. If no extra properties are provided then default values will be used.
 
-    The following example will add the quote "Et tu Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
-        Et tu Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
+    The following example will add the quote "Et tu, Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
+        Et tu, Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
 
 #### XML
     1. The xml tag <quote> is required.
@@ -43,30 +43,40 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
     4. A single root tag is needed but the name does not matter as long as it is unique and not named the same as any subtag, <dictionary> or <quotes> are good root tags.
     5. At this time no attributes are used.
 
-    The following valid XML example will add the quote "Et tu Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
+    The following valid XML example will add the quote "Et tu, Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
     <dictionary>
         <quote>
-            <text>Et tu Brute.</text>
+            <text>Et tu, Brute.</text>
             <source>Gaius Julius Caesar</source>
             <used>1</used>
         </quote>
     </dictionary>
 
 #### CSV
+    1. The first row must contain headers.
+    2. Each value must be separated by a comma.
+    3. The best practice is to surround the quote text in quotes as it is necessary when the quote contains a comma.
+
+    The following CSV example will add the quote "Et tu, Brute!" with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
+    ---------------------------------------------    
+    quote,source,used
+    "Et tu, Brute!",Gaius Julius Caesar,1
 
 #### JSON
 
-### How to export quotes:
+### Exporting Quotes:
+#### General Export Information
+    The following config properties are used in the export process:
+        - archive_path          | The location where the data will be exported.
+        - archive_file_prefix   | The beginning of the export file name, something generic.
+        - base_export_extension | The file type of the exported files.
+
+####
     1. The quote and speaker dictionaries are exported as a flat .txt file.
     2. They come from the python dictionary that they are stored in while the program is running.
 
     The exported quotes will look like the example below:
         That's what she said!:{'source': 'Michael Scott', 'used': 1}
-
-    The following config properties are used in the export process:
-        - archive_path          | The location where the data will be exported.
-        - archive_file_prefix   | The beginning of the export file name, something generic.
-        - base_export_extension | The file type of the exported files.
     
 
 Further Reading and Library Documentation:
