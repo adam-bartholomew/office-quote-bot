@@ -21,8 +21,11 @@ properties = {"consumer_key": "",
               "use_connection": "False",
               "import_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/imports/",
               "archive_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/archive/",
+              "export_path": "C:/Users/adamb/OneDrive/Desktop/Quotes/exports/",
+              "export_file_prefix": "dict_export_",
               "archive_file_prefix": "dict_archive_",
               "base_export_extension": ".txt",
+              "base_archive_extension": ".zip",
               "allowed_import_filetypes": ".txt",
               }
 

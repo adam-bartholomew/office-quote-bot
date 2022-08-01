@@ -11,6 +11,7 @@ import logging
 import json
 import csv
 import xml.etree.ElementTree as elementTree
+from zipfile import ZipFile, BadZipFile
 
 # Custom libraries.
 import config
@@ -24,8 +25,11 @@ LOG_FORMAT = config.get_property("log_format")
 BASE_LOG_DIR = config.get_property("base_log_dir")
 BASE_LOG_EXT = config.get_property("base_log_extension")
 ARCHIVE_PATH = config.get_property("archive_path")
+EXPORT_PATH = config.get_property("export_path")
+EXPORT_FILE_PREFIX = config.get_property("export_file_prefix")
 ARCHIVE_FILE_PREFIX = config.get_property("archive_file_prefix")
-BASE_EXPORT_EXT = config.get_property("base_export_extension")
+EXPORT_EXT = config.get_property("base_export_extension")
+ARCHIVE_EXTENSION = config.get_property_with_default("base_archive_extension", ".zip")
 ALLOWED_IMPORT_FILETYPES = config.get_property("allowed_import_filetypes")
 
 # Create variables.
@@ -508,8 +512,8 @@ def import_file_xml(dictionary, filename):
 def export_current_dicts():
     print(f"Exporting current working dicts")
     log.info(f"Exporting current working dicts")
-    quotes_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
-    speakers_export_filename = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}speaker_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{BASE_EXPORT_EXT}"
+    quotes_export_filename = f"{EXPORT_PATH}{EXPORT_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{EXPORT_EXT}"
+    speakers_export_filename = f"{EXPORT_PATH}{EXPORT_FILE_PREFIX}speaker_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{EXPORT_EXT}"
     log.info(f"Exporting current working dicts to:\nQuote Dict: {quotes_export_filename}\nSpeaker Dict: {speakers_export_filename}")
 
     check_dictionary()
@@ -523,6 +527,36 @@ def export_current_dicts():
             f.write('%s:%s\n' % (key, value))
 
     log.info(f"Export complete")
+
+
+# Zip up the exported files.
+def archive_all_exports():
+    file_paths = []
+    new_zip_name = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{ARCHIVE_EXTENSION}"
+    log.info(f"Archiving to: {new_zip_name}")
+
+    # Crawl through the export directory
+    for root, directories, files in os.walk(EXPORT_PATH):
+        for filename in files:
+            # join the two strings in order to form the full filepath.
+            filepath = os.path.join(root, filename)
+            file_paths.append(filepath)
+
+    # Write each file in the export location to a zip.
+    try:
+        with ZipFile(new_zip_name, 'w') as zipfile:
+            for file in file_paths:
+                filename = str(file.split("/")[-1])
+                zipfile.write(file, arcname=filename)
+    except FileNotFoundError:
+        log.error(f"File {file} was not found")
+    except BadZipFile:
+        log.error(f"Exception writing to the zip file: {new_zip_name}")
+    else:
+        log.info(f"Successfully archived all export files into: {new_zip_name}")
+        for file in os.listdir(EXPORT_PATH):
+            os.remove(os.path.join(EXPORT_PATH, file))
+            print(file)
 
 
 # Add new speaker to speaker_dict
