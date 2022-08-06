@@ -350,7 +350,7 @@ def import_new_sayings():
 
         # Import quotes from a json file into the default office quote dict
         if filename.endswith('.json'):
-            print("json file")
+            import_file_json(new_quote_dict, filename)
 
 
 # Import quotes from a .txt file.
@@ -371,7 +371,7 @@ def import_file_txt(dictionary, filename):
                     int(line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
                     used = int(
                         line_data[1].split(', ')[1].split(': ')[1].replace('}', '').replace('"', '').replace("'", ''))
-                except ValueError:
+                except(ValueError, TypeError):
                     log.info(f"Used value is not an integer, setting to 0")
                     used = 0
             else:
@@ -391,13 +391,13 @@ def get_csv_header_data(header_row):
     # Get the field indices from the header.
     index, quote_ind, source_ind, used_ind = 0, 0, 0, 0
     for field in header_row:
-        if field == 'quote' or field == 'text':
+        if field == 'text' or field == 'quote':
             quote_ind = index
             index += 1
         elif field == 'source' or field == 'speaker':
             source_ind = index
             index += 1
-        elif field == 'used':
+        elif field == 'used' or field == 'count':
             used_ind = index
             index += 1
         else:
@@ -436,9 +436,11 @@ def import_file_csv(dictionary, filename):
             quote_text, source, used = get_csv_row_data(row, quote_ind, source_ind, used_ind)
             if not is_valid_quote(quote_text):  # If the quote text is not valid skip the current row.
                 continue
+
+            # Check the used value, make it an integer.
             try:
                 int(used)
-            except ValueError:
+            except(ValueError, TypeError):
                 log.info(f"CSV - Used value is not an integer, setting to 0")
                 used = 0
             else:
@@ -456,13 +458,55 @@ def import_file_csv(dictionary, filename):
         quote_dict.update(dictionary)
 
 
+# Get the values out of the provided json data row.
+# @param - row_data: A single row of json information.
+def get_json_row_data(row_data):
+    quote_text, source, used = None, None, None
+    for index, value in enumerate(row_data):
+        if value == 'text' or value == 'quote':
+            quote_text = row_data[value]
+        if value == 'source' or value == 'speaker':
+            source = row_data[value]
+        if value == 'used' or value == 'count':
+            used = row_data[value]
+
+        if quote_text is not None:
+            quote_text = quote_text.strip('"').strip("'").strip()  # Format the quote text.
+    return quote_text, source, used
+
+
 # Import quotes from a .json file.
 # @param - dictionary: The dictionary we should add data to.
 # @param - filename: The full file path and name that we will read data in from.
 def import_file_json(dictionary, filename):
     log.info(f"Opening JSON file '{filename}.'")
     with open(filename, 'r') as f:
-        print("json")
+        json_data = json.load(f)
+
+        # Iterate through each JSON quote object.
+        for quote_data in json_data['quotes']:
+            quote_text, source, used = get_json_row_data(quote_data)
+            if not is_valid_quote(quote_text):  # If the quote text is not valid skip the current row.
+                continue
+
+            # Check the used value, make it an integer.
+            try:
+                int(used)
+            except(ValueError, TypeError):
+                log.info(f"JSON - Used value is not an integer, setting to 0")
+                used = 0
+            else:
+                used = int(used)
+
+            if not is_valid_source(source):
+                source = "Unknown"
+            if not is_valid_used(used):
+                used = 0
+
+            add_new_quote(dictionary, quote_text, source, used)
+
+        # Finally, add all new quotes to the existing dictionary.
+        quote_dict.update(dictionary)
 
 
 # Get the child XML elements of the provided XML item.
@@ -470,11 +514,11 @@ def import_file_json(dictionary, filename):
 def get_quote_xml_properties(item):
     quote_text, source, used = None, None, None
     for child in item:
-        if child.tag == 'text' or child.tag == 'saying':
+        if child.tag == 'text' or child.tag == 'quote':
             quote_text = child.text
-        if child.tag == 'source':
+        if child.tag == 'source' or child.tag == 'speaker':
             source = child.text
-        if child.tag == 'used':
+        if child.tag == 'used' or child.tag == 'count':
             used = child.text
     return quote_text, source, used
 

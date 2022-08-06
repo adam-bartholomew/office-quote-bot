@@ -169,14 +169,5 @@ if __name__ == "__main__":
     #main()
 
     # Do any testing here, but first comment out main():
-    #quoteDict.export_current_dicts()
-    #quoteDict.archive_all_exports()
-    #quoteDict.import_file_csv(quoteDict.quote_dict, 'C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\imports\\new_csv.csv')
-    quoteDict.import_new_sayings()
-    print(quoteDict.quote_dict)
-    #quoteDict.add_new_speaker("michael scott")
-    #quoteDict.import_new_sayings()
-    quoteDict.export_current_dicts()
-
     #conn = connect()
     #get_best_friend(conn)
