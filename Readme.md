@@ -34,16 +34,18 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
     6. If no extra properties are provided then default values will be used.
 
     The following example will add the quote "Et tu, Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
-        Et tu, Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
+    -----------------------------------------------------------------
+    Et tu, Brute.:{'source': 'Gaius Julius Caesar', 'used': 1}
 
 #### XML
     1. The xml tag <quote> is required.
     2. The quote's text needs to be within <text> tags nested within each <quote> element.
     3. Any extra properties for the quote should also be in nested tags within the outer <quote> element, e.g. <source>, <used>
     4. A single root tag is needed but the name does not matter as long as it is unique and not named the same as any subtag, <dictionary> or <quotes> are good root tags.
-    5. At this time no attributes are used.
+    5. At this time no XML attributes are used.
 
     The following valid XML example will add the quote "Et tu, Brute." with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
+    -----------------------------------------------------------------
     <dictionary>
         <quote>
             <text>Et tu, Brute.</text>
@@ -58,11 +60,20 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
     3. The best practice is to surround the quote text in quotes as it is necessary when the quote contains a comma.
 
     The following CSV example will add the quote "Et tu, Brute!" with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
-    ---------------------------------------------    
+    -----------------------------------------------------------------
     quote,source,used
     "Et tu, Brute!",Gaius Julius Caesar,1
 
 #### JSON
+    1. The JSON data must have an outer/root object named "quotes" which contains an array of individual quote(s) separated by a comma.
+    2. Every individual quote is an object with the "quotes" array.
+    3. Follows standard JSON formatting.
+
+    The following JSON example will add the quote "Et tu, Brute!" with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
+    -----------------------------------------------------------------
+    {"quotes": [
+	    {"text": "Et tu, Brute!", "source": "Gaius Julius Caesar", "used": 1}
+    ]}
 
 ### Exporting Quotes:
 #### General Export Information
