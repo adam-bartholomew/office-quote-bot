@@ -10,6 +10,8 @@ import datetime
 import time
 import logging
 import random
+from playsound import playsound
+import os
 
 # Custom libraries.
 import config
@@ -26,6 +28,7 @@ LOG_FORMAT = config.get_property("log_format")
 BASE_LOG_DIR = config.get_property("base_log_dir")
 BASE_LOG_EXT = config.get_property("base_log_extension")
 USE_CONN = config.get_use_connection()
+SOUND_DIR = config.get_property("sound_dir")
 
 # Create variables.
 log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
@@ -53,8 +56,9 @@ def send_tweet(quote, tweet, conn):
                 conn.update_status(status=tweet)
                 log.info(f"USE_CONN={USE_CONN} | Tweet sent: {tweet}")
                 print(f"USE_CONN={USE_CONN} | Tweet sent: {tweet}")
-            log.info(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
-            print(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
+            else:
+                log.info(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
+                print(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
             quoteDict.increase_used_by_one(quote)
             return True
         except tweepy.TweepyException as err:
@@ -103,6 +107,9 @@ def iteration(conn):
     log.info(f"Start of a new iteration")
     quote, tweet = get_quote()
     if send_tweet(quote, tweet, conn):
+        sound_file = SOUND_DIR + random.choice(os.listdir(SOUND_DIR))
+        playsound(sound_file)
+        log.info(f"Played the sound: {sound_file}")
         return True
     else:
         log.error(f"Caught a tweepy error, trying again...")
@@ -166,7 +173,7 @@ def main():
 
 if __name__ == "__main__":
     log.info(f"Calling __main__")
-    #main()
+    main()
 
     # Do any testing here, but first comment out main():
     #conn = connect()

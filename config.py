@@ -27,6 +27,7 @@ properties = {"consumer_key": "",
               "base_export_extension": ".txt",
               "base_archive_extension": ".zip",
               "allowed_import_filetypes": ".txt",
+              "sound_dir": "C:/Users/adamb/OneDrive/Desktop/Quotes/sounds/",
               }
 
 log_filename = properties.get("base_log_dir") + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + properties.get('base_log_extension')
