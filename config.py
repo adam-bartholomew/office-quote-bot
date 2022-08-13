@@ -11,7 +11,7 @@ properties = {"consumer_key": "",
               "consumer_secret": "",
               "access_token": "",
               "access_secret": "",
-              "sleep_for": "880000",  # represented in seconds: 24 hours
+              "sleep_for": "86400",  # represented in seconds: 24 hours
               "comment_char": "#",
               "double_line_char": "&",
               "log_format": "%(asctime)s.%(msecs)03d |:| %(levelname)s |:| %(message)s",
@@ -61,7 +61,8 @@ def get_python_import_path():
 
 
 # Get a property.
-# @param - name: The name of the property to get.
+# @param: name - The name of the property to get.
+# Returns: Value
 def get_property(name):
     if properties.get(name) and len(properties.get(name)) > 0:
         log.info(f"Got property '{name}' with value '{properties.get(name)}'")
@@ -71,8 +72,9 @@ def get_property(name):
 
 
 # Get a property by name with default value.
-# @param - name: The name of the property to get.
-# @param - default: The default property to return if property not found/set.
+# @param: name - The name of the property to get.
+# @param: default - The default property to return if property not found/set.
+# Returns: Value or Default
 def get_property_with_default(name, default):
     if get_property(name):
         return get_property(name)
