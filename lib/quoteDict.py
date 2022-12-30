@@ -12,6 +12,7 @@ import json
 import csv
 import xml.etree.ElementTree as elementTree
 from zipfile import ZipFile, BadZipFile
+from yattag import Doc, indent
 
 # Custom libraries.
 import config
@@ -551,6 +552,59 @@ def import_file_xml(dictionary, filename):
         quote_dict.update(dictionary)
 
 
+# Export the current quote dictionary to a xml file.
+def export_current_dicts_xml(quote_filename, speaker_filename):
+    with open(quote_filename, "w") as f:
+        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r")
+        doc, tag, text = Doc().tagtext()
+        with tag('quotes'):
+            for key, value in quote_dict.items():
+                with tag('quote'):
+                    with tag('text'):
+                        text(key)
+                    for k, v in value.items():
+                        if k == 'source':
+                            with tag('source'):
+                                text(v)
+                        if k == 'used':
+                            with tag('used'):
+                                text(v)
+        result = indent(
+            doc.getvalue(),
+            indentation=' ' * 4,
+            newline='\r'
+        )
+        f.write(result)
+
+    with open(speaker_filename, "w") as f:
+        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r")
+        doc, tag, text = Doc().tagtext()
+        with tag('speakers'):
+            for key, value in speaker_dict.items():
+                with tag('speaker'):
+                    with tag('id'):
+                        text(key)
+                    with tag('name'):
+                        text(value)
+        result = indent(
+            doc.getvalue(),
+            indentation=' ' * 4,
+            newline='\r'
+        )
+        f.write(result)
+
+
+# Export the current quote dictionary to a xml file.
+def export_current_dicts_txt(quote_filename, speaker_filename):
+    with open(quote_filename, "w") as f:
+        for key, value in quote_dict.items():
+            f.write('%s:%s\n' % (key, value))
+
+    with open(speaker_filename, "w") as f:
+        for key, value in speaker_dict.items():
+            f.write('%s:%s\n' % (key, value))
+
+
 # Export the current quote dictionary to a file.
 def export_current_dicts():
     quotes_export_filename = f"{EXPORT_PATH}{EXPORT_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{EXPORT_EXT}"
@@ -560,15 +614,12 @@ def export_current_dicts():
 
     check_dictionary()
 
-    with open(quotes_export_filename, "w") as f:
-        for key, value in quote_dict.items():
-            f.write('%s:%s\n' % (key, value))
+    if EXPORT_EXT == ".xml":
+        export_current_dicts_xml(quotes_export_filename, speakers_export_filename)
+    else:
+        export_current_dicts_txt(quotes_export_filename, speakers_export_filename)
 
-    with open(speakers_export_filename, "w") as f:
-        for key, value in speaker_dict.items():
-            f.write('%s:%s\n' % (key, value))
-
-    log.info(f"Export complete")
+    log.info(f"Exporting complete")
 
 
 # Zip up the exported files and place in the archive directory.
