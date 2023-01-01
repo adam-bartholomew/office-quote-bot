@@ -553,9 +553,12 @@ def import_file_xml(dictionary, filename):
 
 
 # Export the current quote dictionary to a xml file.
+# @param: quote_filename - The export file for quotes.
+# @param: speaker_filename - The export file for speakers.
 def export_current_dicts_xml(quote_filename, speaker_filename):
+    log.info(f"Exporting to XML.")
     with open(quote_filename, "w") as f:
-        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r")
+        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r")
         doc, tag, text = Doc().tagtext()
         with tag('quotes'):
             for key, value in quote_dict.items():
@@ -577,7 +580,7 @@ def export_current_dicts_xml(quote_filename, speaker_filename):
         f.write(result)
 
     with open(speaker_filename, "w") as f:
-        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r")
+        f.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r")
         doc, tag, text = Doc().tagtext()
         with tag('speakers'):
             for key, value in speaker_dict.items():
@@ -595,7 +598,10 @@ def export_current_dicts_xml(quote_filename, speaker_filename):
 
 
 # Export the current quote dictionary to a xml file.
+# @param: quote_filename - The export file for quotes.
+# @param: speaker_filename - The export file for speakers.
 def export_current_dicts_txt(quote_filename, speaker_filename):
+    log.info(f"Exporting to TXT.")
     with open(quote_filename, "w") as f:
         for key, value in quote_dict.items():
             f.write('%s:%s\n' % (key, value))
@@ -603,6 +609,34 @@ def export_current_dicts_txt(quote_filename, speaker_filename):
     with open(speaker_filename, "w") as f:
         for key, value in speaker_dict.items():
             f.write('%s:%s\n' % (key, value))
+
+
+# Export the current quote dictionary to a csv file.
+# @param: quote_filename - The export file for quotes.
+# @param: speaker_filename - The export file for speakers.
+def export_current_dicts_csv(quote_filename, speaker_filename):
+    log.info(f"Exporting to CSV.")
+    with open(quote_filename, "w", newline="") as f:
+        headers = ["Quote", "Source", "Used"]
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        for key, value in quote_dict.items():
+            row = list()
+            row.append(key)
+            for k, v in value.items():
+                row.append(v)
+            writer.writerow(row)
+
+    with open(speaker_filename, "w", newline="") as f:
+        headers = ["Id", "Name"]
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        writer.writerows(speaker_dict.items())
+
+
+# Export the current quote dictionary to a json file.
+def export_current_dicts_json(quote_filename, speaker_filename):
+    print("export json")
 
 
 # Export the current quote dictionary to a file.
@@ -616,6 +650,12 @@ def export_current_dicts():
 
     if EXPORT_EXT == ".xml":
         export_current_dicts_xml(quotes_export_filename, speakers_export_filename)
+    elif EXPORT_EXT == ".csv":
+        print("csv export")
+        export_current_dicts_csv(quotes_export_filename, speakers_export_filename)
+    elif EXPORT_EXT == ".json":
+        print("json export")
+        export_current_dicts_json(quotes_export_filename, speakers_export_filename)
     else:
         export_current_dicts_txt(quotes_export_filename, speakers_export_filename)
 
