@@ -652,8 +652,17 @@ def export_current_dicts_csv(quote_filename, speaker_filename):
 
 
 # Export the current quote dictionary to a json file.
+# @param: quote_filename - The export file for quotes.
+# @param: speaker_filename - The export file for speakers.
 def export_current_dicts_json(quote_filename, speaker_filename):
-    print("export json")
+    log.info(f"Exporting to JSON.")
+    json_quote_array = [{'text': i, 'source': quote_dict[i]['source'], 'used': quote_dict[i]['used']} for i in quote_dict]
+    json_quote_dict = {"quotes": json_quote_array}
+    json_speaker_dict = [{'id': k, 'name': v} for k, v in speaker_dict.items()]
+    with open(quote_filename, "w", newline="") as f:
+        json.dump(json_quote_dict, f, indent=4)
+    with open(speaker_filename, "w", newline="") as f:
+        json.dump(json_speaker_dict, f, indent=4)
 
 
 # Export the current quote dictionary to a file.
