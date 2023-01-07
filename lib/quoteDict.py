@@ -348,17 +348,34 @@ def check_dictionary():
             quote_dict[quote]['source'] = "Unknown"
 
 
+# Checks to see if a quote, case-insensitive, exists in the dictionary.
+# @param: quote - The quote to check.
+# Returns: Boolean - True if the quote exists otherwise False.
+def is_quote_in_dict(dictionary, quote):
+    log.debug(f"Checking dictionary for: \"{quote.lower()}\"")
+    for key in dictionary.keys():
+        if quote.lower() == key.lower():
+            log.info(f"\"{quote.lower()}\" was found.")
+            return True
+
+    log.info(f"\"{quote.lower()}\" was not found.")
+    return False
+
+
 # Add a new quote to the dict.
 # @param: dictionary - The dictionary object to add quotes to.
 # @param: quote - The new quote to be added.
 # @param: source - The quote speaker.
 # @param: used - The number of times the quote has been used.
 def add_new_quote(dictionary, quote, source, used):
-    dictionary[quote] = {}
-    dictionary[quote]['source'] = source
-    dictionary[quote]['used'] = used
-    add_new_speaker(source)
-    log.info(f"New quote added to dict - \"{quote}\":{dictionary[quote]}")
+    if not is_quote_in_dict(quote_dict, quote):
+        dictionary[quote] = {}
+        dictionary[quote]['source'] = source
+        dictionary[quote]['used'] = used
+        add_new_speaker(source)
+        log.info(f"New quote added to dict - \"{quote}\":{dictionary[quote]}")
+    else:
+        log.info(f"This quote already exists in the dictionary and has not been added: \"{quote}\"")
 
 
 # Import new quotes from files into the default office quote dict.
