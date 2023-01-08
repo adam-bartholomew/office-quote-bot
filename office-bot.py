@@ -51,7 +51,7 @@ def connect():
 # @param: conn - The tweepy api connection.
 # Returns: Boolean
 def send_tweet(quote, tweet, conn):
-    if tweet and isinstance(tweet, str):
+    if tweet and isinstance(tweet, str) and len(tweet) <= 280:
         try:
             if USE_CONN:
                 conn.update_status(status=tweet)
@@ -65,6 +65,7 @@ def send_tweet(quote, tweet, conn):
         except tweepy.TweepyException as err:
             log.error(f"Error occurred sending tweet: {err}")
             return False
+    log.debug(f"office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
 
 
 # Chooses a quote from the dictionary.
@@ -74,14 +75,21 @@ def get_quote():
 
     possible_options = quoteDict.get_least_used_dict()
     random.seed()
-    index = random.randint(0, len(possible_options) - 1)
+    msg = ""
 
-    quote = list(possible_options.keys())[index]
-    quote_speaker = (list(possible_options.values())[index]).get('source')
-    msg = "\"%s\" - %s" % (quote, quote_speaker)
-    log.info(f"Quote selected \"{quote}\": {str(quoteDict.quote_dict[quote])}")
+    while msg == "":
+        index = random.randint(0, len(possible_options) - 1)
+        quote = list(possible_options.keys())[index]
+        quote_speaker = (list(possible_options.values())[index]).get('source')
+        msg = "\"%s\" - %s" % (quote, quote_speaker)
 
-    return quote, msg
+        # Check to make sure the tweet is not too long.
+        if len(msg) > 280:
+            log.debug(f"Built a tweet but it is too long, starting over.")
+            msg = ""
+        else:
+            log.info(f"Quote selected \"{quote}\": {str(quoteDict.quote_dict[quote])}")
+            return quote, msg
 
 
 # Follows someone back if they follow this account.
@@ -180,3 +188,7 @@ if __name__ == "__main__":
     # Do any testing here, but first comment out main():
     #conn = connect()
     #get_best_friend(conn)
+    #quoteDict.export_current_dicts_csv("C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export.csv", "C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export_2.csv")
+    #quoteDict.export_current_dicts_json("C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export.json", "C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export_2.json")
+    #quote, tweet = "1234567890"*28+"A", "1234567890"*28+"A"
+    #send_tweet(quote, tweet, connect())
