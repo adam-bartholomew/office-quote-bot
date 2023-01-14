@@ -68,6 +68,20 @@ def send_tweet(quote, tweet, conn):
     log.debug(f"office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
 
 
+# Get the last tweet sent.
+# @param: conn - The tweepy api connection.
+def get_last_tweet(conn):
+    log.info(f"Getting the last tweet sent by this user.")
+    if USE_CONN:
+        name = conn.verify_credentials().screen_name
+        last_tweet = conn.user_timeline(screen_name=name, count=1)[0].text
+        log.debug(f"Got the last tweet sent for {name}: \"{last_tweet}\"")
+        return last_tweet
+    else:
+        log.debug(f"USE_CONN is false...Cannot connect to twitter.")
+        return None
+
+
 # Chooses a quote from the dictionary.
 # Returns: String, String
 def get_quote():
@@ -183,10 +197,11 @@ def main():
 
 if __name__ == "__main__":
     log.info(f"Calling __main__")
-    main()
+    #main()
 
     # Do any testing here, but first comment out main():
-    #conn = connect()
+    conn = connect()
+    get_last_tweet(conn)
     #get_best_friend(conn)
     #quoteDict.export_current_dicts_csv("C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export.csv", "C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export_2.csv")
     #quoteDict.export_current_dicts_json("C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export.json", "C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export_2.json")
