@@ -32,7 +32,7 @@ SOUND_DIR = config.get_property("sound_dir")
 
 # Create variables.
 log_filename = BASE_LOG_DIR + "twitter-bot_" + datetime.datetime.now().strftime("%Y%m%d") + BASE_LOG_EXT
-logging.basicConfig(filename=log_filename, format=LOG_FORMAT, level=logging.DEBUG, datefmt=DATE_FORMAT)
+logging.basicConfig(filename=log_filename, format=LOG_FORMAT, level=logging.INFO, datefmt=DATE_FORMAT)
 log = logging.getLogger()
 sleep_time = datetime.timedelta(seconds=int(SLEEP_FOR))
 used_quotes = {}
@@ -65,20 +65,21 @@ def send_tweet(quote, tweet, conn):
         except tweepy.TweepyException as err:
             log.error(f"Error occurred sending tweet: {err}")
             return False
-    log.debug(f"office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
+    log.warning(f"office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
 
 
 # Get the last tweet sent.
 # @param: conn - The tweepy api connection.
 def get_last_tweet(conn):
     log.info(f"Getting the last tweet sent by this user.")
-    if USE_CONN:
+    try:
         name = conn.verify_credentials().screen_name
+        log.info('here')
         last_tweet = conn.user_timeline(screen_name=name, count=1)[0].text
-        log.debug(f"Got the last tweet sent for {name}: \"{last_tweet}\"")
+        log.info(f"Got the last tweet sent for {name}: \"{last_tweet}\"")
         return last_tweet
-    else:
-        log.debug(f"USE_CONN is false...Cannot connect to twitter.")
+    except tweepy.TweepyException as err:
+        log.error(f"USE_CONN is false...Cannot connect to twitter: {err}")
         return None
 
 
@@ -117,7 +118,7 @@ def check_followers(conn):
                 try:
                     conn.create_friendship(follower.screen_name, follower.id)
                 except tweepy.TweepyException as err:
-                    log.info(f"An unknown exception occurred while trying to follow '{follower.screen_name}': {err}")
+                    log.debug(f"An unknown exception occurred while trying to follow '{follower.screen_name}': {err}")
                 else:
                     log.info(f"ALERT - Now following: {follower.screen_name}")
         log.info(f"All followers are now followed.\nFOLLOWER CHECK COMPLETE.")
@@ -130,6 +131,8 @@ def check_followers(conn):
 def iteration(conn):
     log.info(f"Start of a new iteration")
     quote, tweet = get_quote()
+    while tweet == get_last_tweet(conn):
+        quote, tweet = get_quote()
     if send_tweet(quote, tweet, conn):
         sound_file = SOUND_DIR + random.choice(os.listdir(SOUND_DIR))
         playsound(sound_file)
@@ -164,7 +167,7 @@ def get_best_friend(conn):
 
         # If possible continue this function here - grab retweets/likes
     else:
-        log.info(f"USE_CONN is {USE_CONN}, not doing anything")
+        log.debug(f"USE_CONN is {USE_CONN}, not doing anything")
 
     print(followers)
 
@@ -197,11 +200,11 @@ def main():
 
 if __name__ == "__main__":
     log.info(f"Calling __main__")
-    #main()
+    main()
 
     # Do any testing here, but first comment out main():
-    conn = connect()
-    get_last_tweet(conn)
+    #conn = connect()
+    #get_last_tweet(conn)
     #get_best_friend(conn)
     #quoteDict.export_current_dicts_csv("C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export.csv", "C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export_2.csv")
     #quoteDict.export_current_dicts_json("C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export.json", "C:\\Users\\adamb\\OneDrive\\Desktop\\Quotes\\exports\\test_export_2.json")
