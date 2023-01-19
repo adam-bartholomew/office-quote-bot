@@ -178,6 +178,7 @@ def main():
     log.info(f"Property use_connection: - {USE_CONN}")
     conn = None
 
+    # TODO: possibly rework this so the connection isn't left open in perpetuity.
     try:
         conn = connect()
     except tweepy.TweepyException as e:
