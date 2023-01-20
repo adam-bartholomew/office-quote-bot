@@ -189,7 +189,7 @@ quote_dict = {
     "Why are all these people here? There are too many people on this earth. We need a new plague.": {
         "source": speaker_dict[2], "used": 1},
     "You couldn't handle my undivided attention.": {
-        "source": speaker_dict[2], "used": -1},
+        "source": speaker_dict[2], "used": 1},
 
     "Lord, beer me strength.": {
         "source": speaker_dict[1], "used": 1},
