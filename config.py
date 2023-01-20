@@ -6,6 +6,7 @@
 # Standard libraries.
 import datetime
 import logging
+from typing import Any
 
 properties = {"consumer_key": "",
               "consumer_secret": "",
@@ -36,7 +37,7 @@ log = logging.getLogger()
 
 
 # Returns a boolean value for the use_connection property.
-def get_use_connection():
+def get_use_connection() -> bool:
     use_conn = get_property_with_default("use_connection", False)
     if use_conn is not None and not isinstance(use_conn, bool):
         if isinstance(use_conn, str):
@@ -53,7 +54,7 @@ def get_use_connection():
 
 
 # Returns the import path in proper format.
-def get_python_import_path():
+def get_python_import_path() -> str:
     import_path = get_property("import_path")
     if import_path is not None and isinstance(import_path, str):
         import_path = import_path.replace("\\", "/")
@@ -63,7 +64,7 @@ def get_python_import_path():
 # Get a property.
 # @param: name - The name of the property to get.
 # Returns: Value
-def get_property(name):
+def get_property(name: str) -> str:
     if properties.get(name) and len(properties.get(name)) > 0:
         log.info(f"Got property '{name}' with value '{properties.get(name)}'")
         return properties.get(name)
@@ -75,7 +76,7 @@ def get_property(name):
 # @param: name - The name of the property to get.
 # @param: default - The default property to return if property not found/set.
 # Returns: Value or Default
-def get_property_with_default(name, default):
+def get_property_with_default(name: str, default: Any) -> Any:
     if get_property(name):
         return get_property(name)
 

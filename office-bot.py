@@ -13,7 +13,7 @@ import random
 from playsound import playsound
 import os
 
-# Custom libraries.
+# Custom imports.
 import config
 import lib.quoteDict as quoteDict
 
@@ -39,7 +39,7 @@ used_quotes = {}
 
 
 # Setup connection with Twitter.
-def connect():
+def connect() -> tweepy.API:
     log.info(f"Attempting to connect to Twitter")
     auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
     return tweepy.API(auth)
@@ -50,7 +50,7 @@ def connect():
 # @param: tweet - The actual tweet being delivered.
 # @param: conn - The tweepy api connection.
 # Returns: Boolean
-def send_tweet(quote, tweet, conn):
+def send_tweet(quote: str, tweet: str, conn: tweepy.API) -> bool:
     if tweet and isinstance(tweet, str) and len(tweet) <= 280:
         try:
             if USE_CONN:
@@ -70,13 +70,15 @@ def send_tweet(quote, tweet, conn):
 
 # Get the last tweet sent.
 # @param: conn - The tweepy api connection.
-def get_last_tweet(conn):
+def get_last_tweet(conn: tweepy.API) -> str | None:
+    print(type(conn))
     log.info(f"Getting the last tweet sent by this user.")
     try:
         name = conn.verify_credentials().screen_name
         log.info('here')
         last_tweet = conn.user_timeline(screen_name=name, count=1)[0].text
         log.info(f"Got the last tweet sent for {name}: \"{last_tweet}\"")
+        print(type(last_tweet))
         return last_tweet
     except tweepy.TweepyException as err:
         log.error(f"USE_CONN is false...Cannot connect to twitter: {err}")
@@ -85,7 +87,7 @@ def get_last_tweet(conn):
 
 # Chooses a quote from the dictionary.
 # Returns: String, String
-def get_quote():
+def get_quote() -> (str, str):
     log.info(f"Choosing quote...")
 
     possible_options = quoteDict.get_least_used_dict()
@@ -109,7 +111,7 @@ def get_quote():
 
 # Follows someone back if they follow this account.
 # @param: conn - The tweepy api connection.
-def check_followers(conn):
+def check_followers(conn: tweepy.API):
     log.info(f"Checking {conn.verify_credentials().screen_name}'s followers")
 
     if USE_CONN:
@@ -128,7 +130,7 @@ def check_followers(conn):
 
 # Manages the process of sending a tweet.
 # @param: conn - The tweepy api connection.
-def iteration(conn):
+def iteration(conn: tweepy.API) -> bool:
     log.info(f"Start of a new iteration")
     quote, tweet = get_quote()
     while tweet == get_last_tweet(conn):
@@ -146,7 +148,7 @@ def iteration(conn):
 
 # Gets the "Best Friend", the user with whom we interacted with the most
 # @param: conn - The tweepy api connection.
-def get_best_friend(conn):
+def get_best_friend(conn: tweepy.API):
     log.info(f"Getting {conn.verify_credentials().screen_name}'s best friend")
     followers = dict()
     followers[conn.verify_credentials().id] = {}

@@ -209,7 +209,7 @@ quote_dict = {
 
 
 # Returns a dictionary of the most used quote(s).
-def get_most_used_dict():
+def get_most_used_dict() -> dict:
     most_used_value = max(props['used'] for quote, props in quote_dict.items())
     most_used = {}
     # Adds quotes to the return dict if the used value matches the most_used_value calculated above.
@@ -224,7 +224,7 @@ def get_most_used_dict():
 
 
 # Returns a dictionary of the least used quote(s).
-def get_least_used_dict():
+def get_least_used_dict() -> dict:
     least_used_value = min(props['used'] for quote, props in quote_dict.items())
     least_used = {}
     # Adds quotes to the return dict if the used value matches the most_used_value calculated above.
@@ -241,21 +241,21 @@ def get_least_used_dict():
 # Checks to see if a given quote has been used at least once.
 # @param: quote - The quote we are going to check.
 # Returns: Boolean
-def is_used(quote):
+def is_used(quote: str) -> bool:
     return bool(quote_dict[quote]['used'] > 0)
 
 
 # Sets the used value of a specific quote.
 # @param: quote - The quote we are going to update.
 # @param: value - The new value for the used property.
-def set_used(quote, value):
+def set_used(quote: str, value: int):
     log.info(f"Setting used to {value} for quote \"{quote}\"")
     quote_dict[quote]['used'] = value
 
 
 # Increases the used value of a quote by 1.
 # @param: quote - The quote object to increase.
-def increase_used_by_one(quote):
+def increase_used_by_one(quote: str):
     log.info(f"Increasing 'used' by 1 for: \"{quote}\"")
     value = quote_dict[quote]['used']
     set_used(quote, value + 1)
@@ -270,7 +270,7 @@ def mark_all_quotes_as_unused():
 # Checks to see if the quote is valid - not empty, null, and does not begin with the comment character.
 # @param: quote - The quote value to check.
 # Returns: Boolean
-def is_valid_quote(quote):
+def is_valid_quote(quote: str) -> bool:
     log.info(f"Checking the quote value provided: {quote}")
     if quote is None or len(quote.strip()) < 1 or quote.strip()[0] == COMMENT_CHAR:
         return False
@@ -280,7 +280,7 @@ def is_valid_quote(quote):
 # Checks to see if the used value is valid - not negative and an integer.
 # @param: used - The used value to check.
 # Returns: Boolean
-def is_valid_used(used):
+def is_valid_used(used: int) -> bool:
     log.info(f"Checking the used value provided: {used}")
     try:
         int(used)
@@ -296,7 +296,7 @@ def is_valid_used(used):
 # Check to make sure used value is an integer or can be cast to an integer, if not return 0.
 # @param: used - The used value to check.
 # Returns: Integer
-def validate_used(used):
+def validate_used(used: int | str) -> int:
     log.info(f"Checking the used value provided: {used}")
     try:
         int(used)
@@ -312,7 +312,7 @@ def validate_used(used):
 # Checks to see if the source value is valid - not empty and a string.
 # @param: source - The source value to check.
 # Returns: Boolean
-def is_valid_source(source):
+def is_valid_source(source: str) -> bool:
     log.info(f"Checking the source value provided: {source}")
     if not isinstance(source, str) or len(source.strip()) < 1 or source is None:
         return False
@@ -329,7 +329,7 @@ def is_valid_source(source):
 # Checks to see if the source value is valid - not empty and a string.
 # @param: source - The source value to check.
 # Returns: String
-def validate_source(source):
+def validate_source(source: str) -> str:
     log.info(f"Checking the source value provided: {source}")
     try:
         str(source)
@@ -352,9 +352,10 @@ def check_dictionary():
 
 
 # Checks to see if a quote, case-insensitive, exists in the dictionary.
+# @param: dictionary - The dictionary to check.
 # @param: quote - The quote to check.
 # Returns: Boolean - True if the quote exists otherwise False.
-def is_quote_in_dict(dictionary, quote):
+def is_quote_in_dict(dictionary: dict, quote: str) -> bool:
     log.debug(f"Checking dictionary for: \"{quote.lower()}\"")
     for key in dictionary.keys():
         if quote.lower() == key.lower():
@@ -370,7 +371,7 @@ def is_quote_in_dict(dictionary, quote):
 # @param: quote - The new quote to be added.
 # @param: source - The quote speaker.
 # @param: used - The number of times the quote has been used.
-def add_new_quote(dictionary, quote, source, used):
+def add_new_quote(dictionary: dict, quote: str, source: str, used: int):
     if not is_quote_in_dict(quote_dict, quote):
         dictionary[quote] = {}
         dictionary[quote]['source'] = source
@@ -408,7 +409,7 @@ def import_new_sayings():
 # Import quotes from a .txt file and add to default quote dictionary.
 # @param: dictionary - The dictionary we should add data to.
 # @param: filename - The full file path and name that we will read data in from.
-def import_file_txt(dictionary, filename):
+def import_file_txt(dictionary: dict, filename: str):
     log.info(f"Opening TXT file '{filename}'")
     with open(filename, 'r') as f:
         for line in f.readlines():
@@ -432,7 +433,7 @@ def import_file_txt(dictionary, filename):
 # Get the CSV header information.
 # @param: header_row - A single row from the top of a csv file with the header values.
 # Returns: Integer - indices for csv positional information.
-def get_csv_header_data(header_row):
+def get_csv_header_data(header_row: list) -> (int, int, int):
     # Get the field indices from the header.
     index, quote_ind, source_ind, used_ind = 0, 0, 0, 0
     for field in header_row:
@@ -457,7 +458,7 @@ def get_csv_header_data(header_row):
 # @param: source_ind - The index of the source data in the row.
 # @param: used_ind - The index of the used data in the row.
 # Returns: String, String, Integer
-def get_csv_row_data(row_data, quote_ind, source_ind, used_ind):
+def get_csv_row_data(row_data: list, quote_ind: int, source_ind: int, used_ind: int) -> (str, str, int):
     quote_text = row_data[quote_ind].strip('"').strip("'").strip()
     source = row_data[source_ind].strip()
     used = row_data[used_ind]
@@ -467,7 +468,7 @@ def get_csv_row_data(row_data, quote_ind, source_ind, used_ind):
 # Import quotes from a .csv file and add to default quote dictionary.
 # @param: dictionary - The dictionary we should add data to.
 # @param: filename - The full file path and name that we will read data in from.
-def import_file_csv(dictionary, filename):
+def import_file_csv(dictionary: dict, filename: str):
     log.info(f"Opening CSV file '{filename}'")
 
     with open(filename, 'r') as f:
@@ -495,7 +496,7 @@ def import_file_csv(dictionary, filename):
 # Get the values out of the provided json data row.
 # @param: row_data - A single row of json information.
 # Returns: String, String, Integer
-def get_json_row_data(row_data):
+def get_json_row_data(row_data: dict) -> (str, str, int):
     quote_text, source, used = None, None, None
     for index, value in enumerate(row_data):
         if value == 'text' or value == 'quote':
@@ -512,7 +513,7 @@ def get_json_row_data(row_data):
 # Import quotes from a .json file and add to default quote dictionary.
 # @param: dictionary - The dictionary we should add data to.
 # @param: filename - The full file path and name that we will read data in from.
-def import_file_json(dictionary, filename):
+def import_file_json(dictionary: dict, filename: str):
     log.info(f"Opening JSON file '{filename}.'")
     with open(filename, 'r') as f:
         json_data = json.load(f)
@@ -533,9 +534,10 @@ def import_file_json(dictionary, filename):
 
 
 # Get the child XML elements of the provided XML item.
-# @param: item - The quote tag from the XML file.
+# @param: item - The XML quote item and all its sub elements.
 # Returns: String, String, Integer
-def get_quote_xml_properties(item):
+def get_quote_xml_properties(item: elementTree.Element) -> (str, str, int):
+    print(type(item))
     quote_text, source, used = None, None, None
     for child in item:
         if child.tag == 'text' or child.tag == 'quote':
@@ -550,7 +552,7 @@ def get_quote_xml_properties(item):
 # Import quotes from a .xml file and add to default quote dictionary.
 # @param: dictionary - The dictionary we should add data to.
 # @param: filename - The full file path and name that we will read data in from.
-def import_file_xml(dictionary, filename):
+def import_file_xml(dictionary: dict, filename: str):
     log.info(f"Opening XML file '{filename}'")
     with open(filename, 'r') as f:
         tree = elementTree.parse(f)
@@ -575,7 +577,7 @@ def import_file_xml(dictionary, filename):
 # Export the current quote dictionary to a xml file.
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
-def export_current_dicts_xml(quote_filename, speaker_filename):
+def export_current_dicts_xml(quote_filename: str, speaker_filename: str):
     log.info(f"Exporting to XML.")
     with open(quote_filename, "w") as f:
         f.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r")
@@ -620,7 +622,7 @@ def export_current_dicts_xml(quote_filename, speaker_filename):
 # Export the current quote dictionary to a xml file.
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
-def export_current_dicts_txt(quote_filename, speaker_filename):
+def export_current_dicts_txt(quote_filename: str, speaker_filename: str):
     log.info(f"Exporting to TXT.")
     with open(quote_filename, "w") as f:
         for key, value in quote_dict.items():
@@ -634,7 +636,7 @@ def export_current_dicts_txt(quote_filename, speaker_filename):
 # Export the current quote dictionary to a csv file.
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
-def export_current_dicts_csv(quote_filename, speaker_filename):
+def export_current_dicts_csv(quote_filename: str, speaker_filename: str):
     log.info(f"Exporting to CSV.")
     with open(quote_filename, "w", newline="") as f:
         headers = ["Quote", "Source", "Used"]
@@ -657,7 +659,7 @@ def export_current_dicts_csv(quote_filename, speaker_filename):
 # Export the current quote dictionary to a json file.
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
-def export_current_dicts_json(quote_filename, speaker_filename):
+def export_current_dicts_json(quote_filename: str, speaker_filename: str):
     log.info(f"Exporting to JSON.")
     json_quote_array = [{'text': i, 'source': quote_dict[i]['source'], 'used': quote_dict[i]['used']} for i in quote_dict]
     json_quote_dict = {"quotes": json_quote_array}
@@ -723,7 +725,7 @@ def archive_all_exports():
 
 # Add a new speaker to speaker_dict.
 # @param: speaker - The new speaker being added.
-def add_new_speaker(new_speaker):
+def add_new_speaker(new_speaker: str) -> bool:
     new_speaker = str(new_speaker.strip('"').strip("'")).title()
     for key, speaker in speaker_dict.items():
         if speaker.title() == new_speaker:
