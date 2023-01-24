@@ -46,7 +46,7 @@ def connect() -> tweepy.API:
     except tweepy.TweepyException as err:
         log.error(f"Exception in connect(). Connection could not be made. {err}")
     else:
-        return tweepy.API(auth)
+        return tweepy.API(auth, wait_on_rate_limit=True)
 
 
 # Sends a tweet given the line and connection to the api.
@@ -180,7 +180,6 @@ def get_best_friend(conn: tweepy.API):
 
 
 # Main function.
-# TODO: prevent the rate limit from being exceeded.
 def main():
     log.info(f"Starting up for the first time")
     log.info(f"Property use_connection: - {USE_CONN}")
