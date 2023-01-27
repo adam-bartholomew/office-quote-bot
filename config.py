@@ -84,4 +84,5 @@ def get_property_with_default(name: str, default: Any) -> Any:
         log.info(f"Property '{name}' not found; returned provided default value '{default}'")
         return default
 
-    log.debug(f"Couldn't get property '{name}' or return default value {default}... Exiting")
+    log.debug(f"Couldn't get property '{name}' or return default value {default}... Returning None")
+    return None
