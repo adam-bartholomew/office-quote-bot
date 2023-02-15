@@ -62,12 +62,12 @@ def send_tweet(quote: str, tweet: str, conn: tweepy.API) -> bool:
             except tweepy.TweepyException as err:
                 log.error(f"Encountered an error while sending a tweet: {err}")
             else:
+                quoteDict.increase_used_by_one(quote)
                 log.info(f"USE_CONN={USE_CONN} | Tweet sent: {tweet}")
                 print(f"USE_CONN={USE_CONN} | Tweet sent: {tweet}")
         else:
             log.info(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
             print(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
-        quoteDict.increase_used_by_one(quote)
         return True
     log.warning(f"office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
 
