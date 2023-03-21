@@ -343,7 +343,7 @@ def validate_source(source: str) -> str:
 
 # Checks the entire dictionary and resets any bad data.
 def check_dictionary():
-    log.info(f"Checking each quote's 'used' and 'source' values to be valid")
+    log.info("Checking each quote's 'used' and 'source' values to be valid")
     for quote in quote_dict:
         if quote_dict[quote]['used'] < 0 or not isinstance(quote_dict[quote]['used'], int) or quote_dict[quote]['used'] is None:
             set_used(quote, 0)
@@ -384,8 +384,8 @@ def add_new_quote(dictionary: dict, quote: str, source: str, used: int):
 
 # Import new quotes from files into the default office quote dict.
 def import_new_sayings():
-    print(f"Importing new quotes from files")
-    log.info(f"Importing new quotes from files")
+    print("Importing new quotes from files")
+    log.info("Importing new quotes from files")
     new_quote_dict = dict()
     for filename in glob.glob(os.path.join(IMPORT_PATH, '*')):
         log.info(f"Attempting to import from file \"{filename}\"")
@@ -578,7 +578,7 @@ def import_file_xml(dictionary: dict, filename: str):
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
 def export_current_dicts_xml(quote_filename: str, speaker_filename: str):
-    log.info(f"Exporting to XML.")
+    log.info("Exporting to XML.")
     with open(quote_filename, "w") as f:
         f.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r")
         doc, tag, text = Doc().tagtext()
@@ -623,7 +623,7 @@ def export_current_dicts_xml(quote_filename: str, speaker_filename: str):
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
 def export_current_dicts_txt(quote_filename: str, speaker_filename: str):
-    log.info(f"Exporting to TXT.")
+    log.info("Exporting to TXT.")
     with open(quote_filename, "w") as f:
         for key, value in quote_dict.items():
             f.write('%s:%s\n' % (key, value))
@@ -637,7 +637,7 @@ def export_current_dicts_txt(quote_filename: str, speaker_filename: str):
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
 def export_current_dicts_csv(quote_filename: str, speaker_filename: str):
-    log.info(f"Exporting to CSV.")
+    log.info("Exporting to CSV.")
     with open(quote_filename, "w", newline="") as f:
         headers = ["Quote", "Source", "Used"]
         writer = csv.writer(f)
@@ -660,7 +660,7 @@ def export_current_dicts_csv(quote_filename: str, speaker_filename: str):
 # @param: quote_filename - The export file for quotes.
 # @param: speaker_filename - The export file for speakers.
 def export_current_dicts_json(quote_filename: str, speaker_filename: str):
-    log.info(f"Exporting to JSON.")
+    log.info("Exporting to JSON.")
     json_quote_array = [{'text': i, 'source': quote_dict[i]['source'], 'used': quote_dict[i]['used']} for i in quote_dict]
     json_quote_dict = {"quotes": json_quote_array}
     json_speaker_dict = [{'id': k, 'name': v} for k, v in speaker_dict.items()]
@@ -675,7 +675,7 @@ def export_current_dicts():
     quotes_export_filename = f"{EXPORT_PATH}{EXPORT_FILE_PREFIX}quotes_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{EXPORT_EXT}"
     speakers_export_filename = f"{EXPORT_PATH}{EXPORT_FILE_PREFIX}speaker_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{EXPORT_EXT}"
     log.info(f"Exporting current working dicts to:\nQuote Dict: {quotes_export_filename}\nSpeaker Dict: {speakers_export_filename}")
-    print(f"Exporting current working dicts")
+    print("Exporting current working dicts")
 
     check_dictionary()
 
@@ -690,14 +690,14 @@ def export_current_dicts():
     else:
         export_current_dicts_txt(quotes_export_filename, speakers_export_filename)
 
-    log.info(f"Exporting complete")
+    log.info("Exporting complete")
 
 
 # Zip up the exported files and place in the archive directory.
 def archive_all_exports():
     file_paths = []
     new_zip_name = f"{ARCHIVE_PATH}{ARCHIVE_FILE_PREFIX}{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}{ARCHIVE_EXTENSION}"
-    log.info(f"Start archive process.")
+    log.info("Start archive process.")
 
     # Crawl through the export directory to create the full filepath for the files to archive.
     for root, directories, files in os.walk(EXPORT_PATH):

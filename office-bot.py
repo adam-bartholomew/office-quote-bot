@@ -40,7 +40,7 @@ used_quotes = {}
 
 # Setup connection with Twitter.
 def connect() -> tweepy.API:
-    log.info(f"Attempting to connect to Twitter")
+    log.info("Attempting to connect to Twitter")
     try:
         auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET)
     except tweepy.TweepyException as err:
@@ -69,13 +69,13 @@ def send_tweet(quote: str, tweet: str, conn: tweepy.API) -> bool:
             log.info(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
             print(f"USE_CONN={USE_CONN} | Tweet not sent: {tweet}")
         return True
-    log.warning(f"office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
+    log.warning("office-bot.send_tweet(): Reached the end of the function without returning anything, the tweet may be too long for twitter.")
 
 
 # Get the last tweet sent.
 # @param: conn - The tweepy api connection.
 def get_last_tweet(conn: tweepy.API) -> str | None:
-    log.info(f"Getting the last tweet sent by this user.")
+    log.info("Getting the last tweet sent by this user.")
     try:
         name = conn.verify_credentials().screen_name
         last_tweet = conn.user_timeline(screen_name=name, count=1)[0].text
@@ -89,7 +89,7 @@ def get_last_tweet(conn: tweepy.API) -> str | None:
 # Chooses a quote from the dictionary.
 # Returns: String, String
 def get_quote() -> (str, str):
-    log.info(f"Choosing quote...")
+    log.info("Choosing quote...")
 
     possible_options = quoteDict.get_least_used_dict()
     random.seed()
@@ -103,7 +103,7 @@ def get_quote() -> (str, str):
 
         # Check to make sure the tweet is not too long.
         if len(msg) > 280:
-            log.debug(f"Built a tweet but it is too long, starting over.")
+            log.debug("Built a tweet but it is too long, starting over.")
             msg = ""
         else:
             log.info(f"Quote selected \"{quote}\": {str(quoteDict.quote_dict[quote])}")
@@ -126,7 +126,7 @@ def check_followers(conn: tweepy.API):
                     else:
                         log.info(f"ALERT - Now following: {follower.screen_name}")
                     finally:
-                        log.info(f"All followers are now followed. FOLLOWER CHECK COMPLETE.")
+                        log.info("All followers are now followed. FOLLOWER CHECK COMPLETE.")
         except tweepy.TweepyException as err:
             log.error(f"An exception occurred in check_followers: {err}")
     else:
@@ -136,7 +136,7 @@ def check_followers(conn: tweepy.API):
 # Manages the process of sending a tweet.
 # @param: conn - The tweepy api connection.
 def iteration(conn: tweepy.API) -> bool:
-    log.info(f"Start of a new iteration")
+    log.info("Start of a new iteration")
     quote, tweet = get_quote()
     while tweet == get_last_tweet(conn):
         quote, tweet = get_quote()
@@ -146,8 +146,8 @@ def iteration(conn: tweepy.API) -> bool:
         log.info(f"Played the sound: {sound_file}")
         return True
     else:
-        log.error(f"Caught a tweepy error, trying again...")
-        print(f"Caught a tweepy error, trying again...")
+        log.error("Caught a tweepy error, trying again...")
+        print("Caught a tweepy error, trying again...")
         return False
 
 
@@ -166,7 +166,7 @@ def get_best_friend(conn: tweepy.API):
             followers[follower.id]['screen_name'] = follower.screen_name
             followers[follower.id]['num_dms'] = 0
 
-        log.info(f"Grabbing direct messages")
+        log.info("Grabbing direct messages")
         for dm in conn.get_direct_messages():
             print(dm)
             if int(dm.message_create['sender_id']) in followers:
@@ -181,7 +181,7 @@ def get_best_friend(conn: tweepy.API):
 
 # Main function.
 def main():
-    log.info(f"Starting up for the first time")
+    log.info("Starting up for the first time")
     log.info(f"Property use_connection: - {USE_CONN}")
 
     try:
@@ -189,23 +189,23 @@ def main():
     except tweepy.TweepyException as err:
         log.warning(f"Connection could not be made to Twitter: - {err}")
     else:
-        log.info(f"Connection made successfully")
+        log.info("Connection made successfully")
         while conn:
-            log.info(f"Start of connection loop.")
+            log.info("Start of connection loop.")
             check_followers(conn)
             did_tweet = iteration(conn)
             while did_tweet is False:
                 did_tweet = iteration(conn)
             # else:
             log.info(f"Going to sleep for {sleep_time}")
-            print(f"Sleeping...")
+            print("Sleeping...")
             time.sleep(SLEEP_FOR)
-        log.debug(f"The tweepy connection was lost.")
-        print(f"Tweepy connection lost...exiting.")
+        log.debug("The tweepy connection was lost.")
+        print("Tweepy connection lost...exiting.")
 
 
 if __name__ == "__main__":
-    log.info(f"Calling __main__")
+    log.info("Calling __main__")
     main()
 
     # Do any testing here, but first comment out main():
