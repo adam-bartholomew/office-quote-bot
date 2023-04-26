@@ -21,7 +21,7 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 I usually run this from within pycharm during development. The file _office-bot.py_ contains the main method that gets called upon execution.
 In a terminal, navigate to where the file _office-bot.py_ is located in the file system and issue the command below
 
-    python office-bot.py
+    $ python office-bot.py
 
 The following packages will need to be installed via pip: tweepy, playsound, and yattag.
 
