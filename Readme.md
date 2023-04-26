@@ -17,6 +17,14 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 * How to define dictionaries and functions to access/modify those dictionaries.
 * How to read and write to and from different file types.
 
+### Running:
+I usually run this from within pycharm during development. The file _office-bot.py_ contains the main method that gets called upon execution.
+In a terminal, navigate to where the file _office-bot.py_ is located in the file system and issue the command below
+
+    python office-bot.py
+
+The following packages will need to be installed via pip: tweepy, playsound, and yattag.
+
 ### Importing Quotes:
 #### General Import Information
     The following config properties are used when importing a quote file:
@@ -57,7 +65,7 @@ _With credit and inspiration from [Josh Richard](https://github.com/joshuarichar
 #### CSV
     1. The first row must contain headers.
     2. Each value must be separated by a comma.
-    3. The best practice is to surround the quote text in quotes as it is necessary when the quote contains a comma.
+    3. The best practice is to surround the quote text in double quotes as it is necessary when the quote contains a comma.
 
     The following CSV example will add the quote "Et tu, Brute!" with the properties of [source] and [used] equal to "Gaius Julius Caesar" and 1:
     -----------------------------------------------------------------
