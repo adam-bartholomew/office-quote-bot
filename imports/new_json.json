@@ -1,0 +1,10 @@
+{"quotes": [
+	{"text": "json quote 1", "source": "JSON", "used": 4},
+	{"quote": "json quote 2'", "speaker": "", "count": "5"},
+	{"text": "json\" quote 3", "source": null, "used": null},
+	{"text": "json quote 4"},
+	{"text": "json quote 5", "source": "", "used": ""},
+	{"text": "" , "source": "", "used": ""},
+	{"text": null, "source": null, "used": null},
+	{}
+]}

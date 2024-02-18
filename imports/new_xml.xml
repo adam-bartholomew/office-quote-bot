@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dictionary>
+	<quote>
+		<text> xml quote 1</text>
+		<source>Adam </source>
+		<used>3</used>
+	</quote>
+	<quote>
+		<text>xml quote 2</text>
+	</quote>
+	<quote>
+		<text>xml quote 3</text>
+		<source></source>
+		<used></used>
+	</quote>
+	<quote>
+		<text>xml quote 4</text>
+		<source>Ad'a"m</source>
+		<used>42</used>
+	</quote>
+	<quote>
+		<text>xml quote 1</text>
+		<source>Adam</source>
+		<used>3</used>
+	</quote>
+	<quote>
+		<text></text>
+		<source>Adam</source>
+		<used>3</used>
+	</quote>
+</dictionary>
